@@ -5,9 +5,23 @@
         <h1 class="logo"><router-link to="/">个人博客</router-link></h1>
         <nav class="nav">
           <router-link to="/">首页</router-link>
-          <router-link to="/create">写文章</router-link>
+          <router-link v-if="isAdmin" to="/create">写文章</router-link>
+          <router-link v-if="isAdmin" to="/users">用户管理</router-link>
           <router-link to="/about">关于</router-link>
         </nav>
+        <div class="user-info">
+          <template v-if="currentUser">
+            <span class="username">
+              {{ currentUser.username }}
+              <span v-if="isAdmin" class="admin-badge">管理员</span>
+            </span>
+            <button class="logout-btn" @click="handleLogout">退出</button>
+          </template>
+          <template v-else>
+            <router-link to="/login" class="nav-link">登录</router-link>
+            <router-link to="/register" class="nav-link">注册</router-link>
+          </template>
+        </div>
       </div>
     </header>
     <main class="main container">
@@ -22,6 +36,49 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { authApi } from './api'
+import type { User } from './types'
+
+const router = useRouter()
+
+const currentUser = ref<User | null>(null)
+
+const isAdmin = computed(() => {
+  return currentUser.value?.role === 'admin'
+})
+
+const checkAuth = async () => {
+  const token = localStorage.getItem('token')
+  const userStr = localStorage.getItem('user')
+  
+  if (token && userStr) {
+    try {
+      currentUser.value = JSON.parse(userStr)
+    } catch (e) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+    }
+  }
+}
+
+const handleLogout = async () => {
+  try {
+    await authApi.logout()
+  } catch (e) {
+    console.log('Logout API error', e)
+  }
+  
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  currentUser.value = null
+  router.push('/')
+}
+
+onMounted(() => {
+  checkAuth()
+})
 </script>
 
 <style scoped>
@@ -73,6 +130,53 @@
 .nav a:hover,
 .nav a.router-link-active {
   background: rgba(255, 255, 255, 0.2);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.username {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.logout-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.nav-link {
+  color: white;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 .main {

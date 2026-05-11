@@ -6,7 +6,13 @@
     <div v-else-if="!post" class="empty">文章不存在</div>
     <div v-else>
       <div class="card post-content">
-        <h1 class="title">{{ post.title }}</h1>
+        <div class="post-header">
+          <h1 class="title">{{ post.title }}</h1>
+          <div v-if="isAdmin" class="admin-actions">
+            <button class="btn-secondary" @click="showEditModal = true">编辑</button>
+            <button class="btn-danger" @click="deletePost">删除</button>
+          </div>
+        </div>
         <div class="meta">
           <span>{{ post.author }}</span>
           <span>{{ post.createdAt }}</span>
@@ -38,10 +44,43 @@
           <div v-for="comment in comments" :key="comment.id" class="card comment-item">
             <div class="comment-header">
               <span class="comment-author">{{ comment.author }}</span>
-              <span class="comment-date">{{ comment.createdAt }}</span>
+              <div>
+                <span class="comment-date">{{ comment.createdAt }}</span>
+                <button v-if="isAdmin" class="btn-danger delete-comment-btn" @click="deleteComment(comment)">
+                  删除
+                </button>
+              </div>
             </div>
             <p class="comment-content">{{ comment.content }}</p>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showEditModal" class="modal-overlay" @click.self="showEditModal = false">
+      <div class="modal-content card">
+        <h3>编辑文章</h3>
+        <div class="form-group">
+          <label class="form-label">标题</label>
+          <input v-model="editForm.title" type="text" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">摘要</label>
+          <input v-model="editForm.summary" type="text" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">标签（用逗号分隔）</label>
+          <input v-model="editForm.tags" type="text" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">内容</label>
+          <textarea v-model="editForm.content" rows="10"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" @click="showEditModal = false">取消</button>
+          <button class="btn-primary" @click="saveEdit" :disabled="saving">
+            {{ saving ? '保存中...' : '保存' }}
+          </button>
         </div>
       </div>
     </div>
@@ -49,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { postApi, commentApi } from '../api'
 import type { Post, Comment, CreateCommentForm } from '../types'
@@ -60,10 +99,23 @@ const router = useRouter()
 const post = ref<Post | null>(null)
 const comments = ref<Comment[]>([])
 const loading = ref(true)
+const showEditModal = ref(false)
+const saving = ref(false)
+
+const userStr = localStorage.getItem('user')
+const currentUser = userStr ? JSON.parse(userStr) : null
+const isAdmin = computed(() => currentUser?.role === 'admin')
 
 const commentForm = ref<CreateCommentForm>({
   author: '',
   content: ''
+})
+
+const editForm = reactive({
+  title: '',
+  content: '',
+  summary: '',
+  tags: ''
 })
 
 const fetchPost = async () => {
@@ -71,6 +123,11 @@ const fetchPost = async () => {
     const id = parseInt(route.params.id as string)
     const response = await postApi.getPost(id)
     post.value = response.data
+    
+    editForm.title = response.data.title
+    editForm.content = response.data.content
+    editForm.summary = response.data.summary
+    editForm.tags = response.data.tags.join(', ')
   } catch (error) {
     console.error('获取文章详情失败:', error)
   }
@@ -117,6 +174,74 @@ const submitComment = async () => {
   }
 }
 
+const saveEdit = async () => {
+  if (!post.value) return
+  
+  if (!editForm.title.trim()) {
+    alert('标题不能为空')
+    return
+  }
+  if (!editForm.content.trim()) {
+    alert('内容不能为空')
+    return
+  }
+
+  saving.value = true
+  try {
+    const tagsArray = editForm.tags
+      .split(',')
+      .map(t => t.trim())
+      .filter(t => t.length > 0)
+
+    await postApi.updatePost(post.value.id, {
+      title: editForm.title,
+      content: editForm.content,
+      summary: editForm.summary,
+      tags: tagsArray
+    })
+    
+    post.value.title = editForm.title
+    post.value.content = editForm.content
+    post.value.summary = editForm.summary
+    post.value.tags = tagsArray
+    
+    showEditModal.value = false
+    alert('保存成功！')
+  } catch (error) {
+    console.error('保存失败:', error)
+    alert('保存失败，请重试')
+  } finally {
+    saving.value = false
+  }
+}
+
+const deletePost = async () => {
+  if (!post.value) return
+  
+  if (!confirm('确定要删除这篇文章吗？此操作不可恢复。')) return
+
+  try {
+    await postApi.deletePost(post.value.id)
+    alert('删除成功！')
+    router.push('/')
+  } catch (error) {
+    console.error('删除失败:', error)
+    alert('删除失败，请重试')
+  }
+}
+
+const deleteComment = async (comment: Comment) => {
+  if (!confirm('确定要删除这条评论吗？')) return
+
+  try {
+    await commentApi.deleteComment(comment.id)
+    comments.value = comments.value.filter(c => c.id !== comment.id)
+  } catch (error) {
+    console.error('删除评论失败:', error)
+    alert('删除评论失败')
+  }
+}
+
 const goBack = () => {
   router.push('/')
 }
@@ -145,9 +270,26 @@ onMounted(() => {
   color: #95a5a6;
 }
 
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-actions button {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
 .post-content .title {
   font-size: 28px;
-  margin-bottom: 16px;
+  margin-bottom: 0;
   color: #2c3e50;
 }
 
@@ -210,7 +352,14 @@ onMounted(() => {
 .comment-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 8px;
+}
+
+.comment-header > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .comment-author {
@@ -223,7 +372,62 @@ onMounted(() => {
   font-size: 14px;
 }
 
+.delete-comment-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
 .comment-content {
   color: #555;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

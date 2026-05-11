@@ -1,5 +1,6 @@
 import express from 'express';
 import { posts } from '../data/mockData.js';
+import { authMiddleware, adminMiddleware } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.get('/:id', (req, res) => {
   res.json(post);
 });
 
-router.post('/', (req, res) => {
+router.post('/', authMiddleware, adminMiddleware, (req, res) => {
   const { title, content, summary, tags } = req.body;
   if (!title || !content) {
     return res.status(400).json({ error: '标题和内容不能为空' });
@@ -30,7 +31,7 @@ router.post('/', (req, res) => {
     title,
     content,
     summary: summary || content.substring(0, 100),
-    author: '博主',
+    author: req.user.username,
     createdAt: new Date().toISOString().split('T')[0],
     likes: 0,
     views: 0,
@@ -41,7 +42,7 @@ router.post('/', (req, res) => {
   res.status(201).json(newPost);
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', authMiddleware, adminMiddleware, (req, res) => {
   const index = postsData.findIndex(p => p.id === parseInt(req.params.id));
   if (index === -1) {
     return res.status(404).json({ error: '文章不存在' });
@@ -56,7 +57,7 @@ router.put('/:id', (req, res) => {
   res.json(postsData[index]);
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', authMiddleware, adminMiddleware, (req, res) => {
   const index = postsData.findIndex(p => p.id === parseInt(req.params.id));
   if (index === -1) {
     return res.status(404).json({ error: '文章不存在' });
