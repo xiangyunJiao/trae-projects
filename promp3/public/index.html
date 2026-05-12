@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多语言翻译平台</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>多语言翻译平台</h1>
+            <div class="language-selector">
+                <label for="currentLang">当前翻译语言：</label>
+                <select id="currentLang">
+                    <option value="ar">阿拉伯语 (ar)</option>
+                    <option value="tr">土耳其语 (tr)</option>
+                    <option value="pt">葡萄牙语 (pt)</option>
+                    <option value="en">英语 (en)</option>
+                    <option value="de">德语 (de)</option>
+                </select>
+                <button id="addLangBtn">添加语言</button>
+            </div>
+        </header>
+
+        <main>
+            <section class="upload-section">
+                <h2>上传 JSON 文件</h2>
+                <div class="upload-area" id="uploadArea">
+                    <p>点击或拖拽 JSON 文件到此处上传</p>
+                    <input type="file" id="fileInput" accept=".json" style="display: none;">
+                </div>
+                <div id="uploadStatus" class="status"></div>
+            </section>
+
+            <section class="files-section">
+                <h2>翻译文件列表</h2>
+                <div class="files-grid" id="filesGrid">
+                    <p class="no-files">暂无翻译文件，请先上传 JSON 文件</p>
+                </div>
+            </section>
+
+            <section class="translation-section" id="translationSection" style="display: none;">
+                <div class="translation-header">
+                    <h2>翻译：<span id="currentFileName"></span></h2>
+                    <div class="translation-actions">
+                        <button id="saveTranslationsBtn">保存翻译</button>
+                        <button id="downloadTranslationBtn">下载</button>
+                        <button id="deleteTranslationBtn" class="danger">删除</button>
+                        <button id="closeTranslationBtn">关闭</button>
+                    </div>
+                </div>
+                <div class="translation-table">
+                    <div class="table-header">
+                        <div class="col-key">词条 Key</div>
+                        <div class="col-original">原文 (中文)</div>
+                        <div class="col-translation">翻译 (<span id="translationLang"></span>)</div>
+                    </div>
+                    <div id="translationRows" class="table-body"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>添加新语言</h3>
+            <input type="text" id="newLangInput" placeholder="输入2位语言代码，如：fr" maxlength="2" style="text-transform: lowercase;">
+            <div class="modal-actions">
+                <button id="cancelAddLang">取消</button>
+                <button id="confirmAddLang">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
