@@ -96,8 +96,16 @@ const cancel = () => {
 
 <style scoped>
 .create-post {
-  max-width: 800px;
+  width: 100%;
+  max-width: 1100px;
   margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (max-width: 1180px) {
+  .create-post {
+    max-width: 100%;
+  }
 }
 
 .form-card {

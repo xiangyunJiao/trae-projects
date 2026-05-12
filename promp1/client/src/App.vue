@@ -76,14 +76,15 @@ onMounted(() => {
 
 .header .container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 32px;
 }
 
 .logo {
   font-size: 24px;
   font-weight: 600;
   margin: 0;
+  flex-shrink: 0;
 }
 
 .logo a {
@@ -97,6 +98,8 @@ onMounted(() => {
 .nav {
   display: flex;
   gap: 24px;
+  margin-left: auto;
+  margin-right: 24px;
 }
 
 .nav a {

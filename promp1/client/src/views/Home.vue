@@ -55,8 +55,16 @@ onMounted(() => {
 
 <style scoped>
 .home {
-  max-width: 900px;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (max-width: 1280px) {
+  .home {
+    max-width: 100%;
+  }
 }
 
 .page-title {
