@@ -119,6 +119,80 @@ app.get('/api/translations/:lang/:filename', (req, res) => {
     }
 });
 
+app.get('/api/all-translations/:filename', (req, res) => {
+    try {
+        const { filename } = req.params;
+        const originalPath = path.join(UPLOADS_DIR, filename);
+        
+        if (!fs.existsSync(originalPath)) {
+            return res.status(404).json({ error: '原始文件不存在' });
+        }
+        
+        const originalContent = JSON.parse(fs.readFileSync(originalPath, 'utf8'));
+        const keys = Object.keys(originalContent);
+        
+        const languages = fs.existsSync(TRANSLATIONS_DIR) 
+            ? fs.readdirSync(TRANSLATIONS_DIR).filter(dir => 
+                fs.statSync(path.join(TRANSLATIONS_DIR, dir)).isDirectory()
+            )
+            : [];
+        
+        const allTranslations = {
+            original: originalContent,
+            translations: {}
+        };
+        
+        languages.forEach(lang => {
+            const translationPath = path.join(TRANSLATIONS_DIR, lang, filename);
+            if (fs.existsSync(translationPath)) {
+                const content = JSON.parse(fs.readFileSync(translationPath, 'utf8'));
+                allTranslations.translations[lang] = content;
+            } else {
+                const translations = {};
+                keys.forEach(key => {
+                    translations[key] = '';
+                });
+                allTranslations.translations[lang] = translations;
+            }
+        });
+        
+        SUPPORTED_LANGUAGES.forEach(lang => {
+            if (!allTranslations.translations[lang]) {
+                const translations = {};
+                keys.forEach(key => {
+                    translations[key] = '';
+                });
+                allTranslations.translations[lang] = translations;
+            }
+        });
+        
+        res.json(allTranslations);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/all-translations/:filename', (req, res) => {
+    try {
+        const { filename } = req.params;
+        const { translations } = req.body;
+        
+        Object.keys(translations).forEach(lang => {
+            const langDir = path.join(TRANSLATIONS_DIR, lang);
+            if (!fs.existsSync(langDir)) {
+                fs.mkdirSync(langDir, { recursive: true });
+            }
+            
+            const translationPath = path.join(langDir, filename);
+            fs.writeFileSync(translationPath, JSON.stringify(translations[lang], null, 2), 'utf8');
+        });
+        
+        res.json({ success: true, message: '所有语言翻译保存成功' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.post('/api/translations/:lang/:filename', (req, res) => {
     try {
         const { lang, filename } = req.params;

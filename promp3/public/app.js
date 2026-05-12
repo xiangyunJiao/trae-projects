@@ -2,6 +2,7 @@ const API_BASE = '/api';
 let currentFile = null;
 let currentLanguage = 'ar';
 let originalFiles = [];
+let currentLanguages = [];
 
 const langNames = {
     ar: '阿拉伯语',
@@ -105,7 +106,8 @@ function initEventListeners() {
     document.getElementById('closeTranslationBtn').addEventListener('click', closeTranslationSection);
     document.getElementById('saveTranslationsBtn').addEventListener('click', saveTranslations);
     document.getElementById('downloadTranslationBtn').addEventListener('click', downloadTranslation);
-    document.getElementById('deleteTranslationBtn').addEventListener('click', deleteTranslation);
+    document.getElementById('downloadAllBtn').addEventListener('click', downloadAllTranslations);
+    document.getElementById('deleteFileBtn').addEventListener('click', deleteCurrentFile);
 }
 
 async function loadLanguages() {
@@ -219,35 +221,65 @@ async function openTranslation(filename) {
     currentFile = filename;
     
     try {
-        const originalFile = originalFiles.find(f => f.name === filename);
-        if (!originalFile) {
-            alert('找不到原始文件');
-            return;
-        }
-
-        const translationResponse = await fetch(`${API_BASE}/translations/${currentLanguage}/${filename}`);
-        const translationData = await translationResponse.json();
+        const allTranslationsResponse = await fetch(`${API_BASE}/all-translations/${filename}`);
+        const allTranslations = await allTranslationsResponse.json();
         
         document.getElementById('currentFileName').textContent = filename;
-        document.getElementById('translationLang').textContent = langNames[currentLanguage] || currentLanguage;
+        
+        currentLanguages = Object.keys(allTranslations.translations);
+        
+        const tableHeader = document.getElementById('tableHeader');
+        let headerHTML = `
+            <div class="col-key">词条 Key</div>
+            <div class="col-original">原文 (中文)</div>
+        `;
+        
+        currentLanguages.forEach(lang => {
+            headerHTML += `<div class="col-lang">${langNames[lang] || lang} (${lang})</div>`;
+        });
+        tableHeader.innerHTML = headerHTML;
         
         const rows = document.getElementById('translationRows');
-        rows.innerHTML = Object.keys(originalFile.content).map(key => `
-            <div class="translation-row" data-key="${key}">
-                <div class="col-key">${key}</div>
-                <div class="col-original">${originalFile.content[key]}</div>
-                <div class="col-translation">
-                    <input type="text" value="${translationData.content[key] || ''}" 
-                           placeholder="输入翻译内容">
-                </div>
-            </div>
-        `).join('');
+        const keys = Object.keys(allTranslations.original);
+        
+        rows.innerHTML = keys.map(key => {
+            let rowHTML = `
+                <div class="translation-row" data-key="${key}">
+                    <div class="col-key">${key}</div>
+                    <div class="col-original">${escapeHtml(allTranslations.original[key])}</div>
+            `;
+            
+            currentLanguages.forEach(lang => {
+                const value = allTranslations.translations[lang] && allTranslations.translations[lang][key] 
+                    ? allTranslations.translations[lang][key] 
+                    : '';
+                rowHTML += `
+                    <div class="col-lang">
+                        <input type="text" 
+                               data-lang="${lang}" 
+                               data-key="${key}"
+                               value="${escapeHtml(value)}" 
+                               placeholder="输入${langNames[lang] || lang}翻译">
+                    </div>
+                `;
+            });
+            
+            rowHTML += '</div>';
+            return rowHTML;
+        }).join('');
         
         document.getElementById('translationSection').style.display = 'block';
         document.querySelector('.files-section').style.display = 'none';
     } catch (error) {
         alert('加载翻译数据失败: ' + error.message);
     }
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function closeTranslationSection() {
@@ -259,25 +291,30 @@ function closeTranslationSection() {
 async function saveTranslations() {
     if (!currentFile) return;
     
-    const rows = document.querySelectorAll('.translation-row');
-    const content = {};
+    const translations = {};
+    currentLanguages.forEach(lang => {
+        translations[lang] = {};
+    });
     
-    rows.forEach(row => {
-        const key = row.dataset.key;
-        const input = row.querySelector('input');
-        content[key] = input.value;
+    const inputs = document.querySelectorAll('.translation-row input');
+    inputs.forEach(input => {
+        const lang = input.dataset.lang;
+        const key = input.dataset.key;
+        if (lang && key) {
+            translations[lang][key] = input.value;
+        }
     });
     
     try {
-        const response = await fetch(`${API_BASE}/translations/${currentLanguage}/${currentFile}`, {
+        const response = await fetch(`${API_BASE}/all-translations/${currentFile}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content })
+            body: JSON.stringify({ translations })
         });
         
         const result = await response.json();
         if (result.success) {
-            alert('翻译保存成功');
+            alert('所有语言翻译保存成功');
             loadFiles();
         } else {
             alert('保存失败: ' + (result.error || '未知错误'));
@@ -313,19 +350,28 @@ async function downloadTranslationFile(filename) {
     }
 }
 
-async function deleteTranslation() {
+async function deleteCurrentFile() {
     if (!currentFile) return;
-    
-    if (confirm('确定要删除这个翻译文件吗？此操作不可撤销。')) {
+    deleteFile(currentFile);
+}
+
+async function deleteTranslationFile(filename) {
+    deleteFile(filename);
+}
+
+async function deleteFile(filename) {
+    if (confirm('确定要删除这个文件及其所有语言的翻译吗？此操作不可撤销，将删除原始文件和所有语言的翻译文件。')) {
         try {
-            const response = await fetch(`${API_BASE}/translations/${currentLanguage}/${currentFile}`, {
+            const response = await fetch(`${API_BASE}/files/${filename}`, {
                 method: 'DELETE'
             });
             
             const result = await response.json();
             if (result.success) {
                 alert(result.message);
-                closeTranslationSection();
+                if (currentFile === filename) {
+                    closeTranslationSection();
+                }
                 loadFiles();
             } else {
                 alert('删除失败: ' + (result.error || '未知错误'));
@@ -336,22 +382,26 @@ async function deleteTranslation() {
     }
 }
 
-async function deleteTranslationFile(filename) {
-    if (confirm('确定要删除这个翻译文件吗？此操作不可撤销。')) {
+async function downloadAllTranslations() {
+    if (!currentFile) return;
+    
+    for (const lang of currentLanguages) {
         try {
-            const response = await fetch(`${API_BASE}/translations/${currentLanguage}/${filename}`, {
-                method: 'DELETE'
-            });
-            
-            const result = await response.json();
-            if (result.success) {
-                alert(result.message);
-                loadFiles();
-            } else {
-                alert('删除失败: ' + (result.error || '未知错误'));
+            const response = await fetch(`${API_BASE}/download/${lang}/${currentFile}`);
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${lang}_${currentFile}`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
         } catch (error) {
-            alert('删除失败: ' + error.message);
+            console.error(`下载 ${lang} 翻译失败:`, error);
         }
     }
 }

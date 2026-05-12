@@ -11,7 +11,7 @@
         <header>
             <h1>多语言翻译平台</h1>
             <div class="language-selector">
-                <label for="currentLang">当前翻译语言：</label>
+                <label for="currentLang">下载语言：</label>
                 <select id="currentLang">
                     <option value="ar">阿拉伯语 (ar)</option>
                     <option value="tr">土耳其语 (tr)</option>
@@ -44,19 +44,21 @@
                 <div class="translation-header">
                     <h2>翻译：<span id="currentFileName"></span></h2>
                     <div class="translation-actions">
-                        <button id="saveTranslationsBtn">保存翻译</button>
-                        <button id="downloadTranslationBtn">下载</button>
-                        <button id="deleteTranslationBtn" class="danger">删除</button>
+                        <button id="saveTranslationsBtn">保存所有翻译</button>
+                        <button id="downloadTranslationBtn">下载当前语言</button>
+                        <button id="downloadAllBtn">下载所有语言</button>
+                        <button id="deleteFileBtn" class="danger">删除文件及所有翻译</button>
                         <button id="closeTranslationBtn">关闭</button>
                     </div>
                 </div>
-                <div class="translation-table">
-                    <div class="table-header">
-                        <div class="col-key">词条 Key</div>
-                        <div class="col-original">原文 (中文)</div>
-                        <div class="col-translation">翻译 (<span id="translationLang"></span>)</div>
+                <div class="translation-table-container">
+                    <div class="translation-table">
+                        <div class="table-header" id="tableHeader">
+                            <div class="col-key">词条 Key</div>
+                            <div class="col-original">原文 (中文)</div>
+                        </div>
+                        <div id="translationRows" class="table-body"></div>
                     </div>
-                    <div id="translationRows" class="table-body"></div>
                 </div>
             </section>
         </main>

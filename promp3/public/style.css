@@ -206,10 +206,17 @@ section h2 {
     flex-wrap: wrap;
 }
 
-.translation-table {
+.translation-table-container {
+    overflow: auto;
+    max-height: 650px;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    overflow: hidden;
+    position: relative;
+}
+
+.translation-table {
+    min-width: 100%;
+    width: max-content;
 }
 
 .table-header {
@@ -217,11 +224,16 @@ section h2 {
     background: #3498db;
     color: white;
     font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 20;
 }
 
 .table-header > div {
     padding: 15px;
     border-right: 1px solid #2980b9;
+    white-space: nowrap;
+    box-sizing: border-box;
 }
 
 .table-header > div:last-child {
@@ -229,23 +241,25 @@ section h2 {
 }
 
 .col-key {
-    flex: 1;
+    flex: 0 0 auto;
+    width: 150px;
     min-width: 150px;
 }
 
 .col-original {
-    flex: 2;
+    flex: 0 0 auto;
+    width: 250px;
     min-width: 250px;
 }
 
-.col-translation {
-    flex: 2;
+.col-lang {
+    flex: 0 0 auto;
+    width: 250px;
     min-width: 250px;
 }
 
 .table-body {
-    max-height: 600px;
-    overflow-y: auto;
+    display: block;
 }
 
 .translation-row {
