@@ -32,9 +32,11 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { authApi } from '../api'
+import { useAuth } from '../store/auth'
 import type { LoginForm } from '../types'
 
 const router = useRouter()
+const { setUser } = useAuth()
 
 const form = ref<LoginForm>({
   username: '',
@@ -51,8 +53,7 @@ const handleLogin = async () => {
     const response = await authApi.login(form.value)
     const { token, user } = response.data
     
-    localStorage.setItem('token', token)
-    localStorage.setItem('user', JSON.stringify(user))
+    setUser(user, token)
     
     router.push('/')
   } catch (err: any) {

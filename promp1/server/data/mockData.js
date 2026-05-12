@@ -82,3 +82,5 @@ export const about = {
 };
 
 export const sessions = new Map();
+
+export const likes = [];

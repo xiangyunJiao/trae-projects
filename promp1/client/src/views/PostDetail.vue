@@ -23,8 +23,14 @@
         </div>
         <div class="content">{{ post.content }}</div>
         <div class="actions">
-          <button class="btn-primary like-btn" @click="likePost">
-            ❤️ 点赞 ({{ post.likes }})
+          <button 
+            :class="['like-btn', { 'btn-primary': !hasLiked, 'liked-btn': hasLiked }]" 
+            @click="toggleLike"
+            :disabled="liking"
+          >
+            <span v-if="hasLiked">❤️ 已点赞 ({{ likesCount }})</span>
+            <span v-else-if="isLoggedIn">🤍 点赞 ({{ likesCount }})</span>
+            <span v-else>🔒 登录后可点赞 ({{ likesCount }})</span>
           </button>
         </div>
       </div>
@@ -101,6 +107,12 @@ const comments = ref<Comment[]>([])
 const loading = ref(true)
 const showEditModal = ref(false)
 const saving = ref(false)
+const liking = ref(false)
+const hasLiked = ref(false)
+const likesCount = ref(0)
+
+const token = localStorage.getItem('token')
+const isLoggedIn = computed(() => !!token)
 
 const userStr = localStorage.getItem('user')
 const currentUser = userStr ? JSON.parse(userStr) : null
@@ -123,6 +135,7 @@ const fetchPost = async () => {
     const id = parseInt(route.params.id as string)
     const response = await postApi.getPost(id)
     post.value = response.data
+    likesCount.value = response.data.likes
     
     editForm.title = response.data.title
     editForm.content = response.data.content
@@ -145,13 +158,40 @@ const fetchComments = async () => {
   }
 }
 
-const likePost = async () => {
-  if (!post.value) return
+const fetchLikeStatus = async () => {
+  if (!isLoggedIn.value || !post.value) return
+  
   try {
-    const response = await postApi.likePost(post.value.id)
-    post.value.likes = response.data.likes
+    const response = await postApi.getLikeStatus(post.value.id)
+    hasLiked.value = response.data.hasLiked
+    likesCount.value = response.data.likes
+  } catch (error) {
+    console.error('获取点赞状态失败:', error)
+  }
+}
+
+const toggleLike = async () => {
+  if (!post.value) return
+  
+  if (!isLoggedIn.value) {
+    alert('请先登录后再点赞')
+    router.push('/login')
+    return
+  }
+
+  liking.value = true
+  try {
+    const response = await postApi.toggleLike(post.value.id)
+    hasLiked.value = response.data.hasLiked
+    likesCount.value = response.data.likes
+    if (post.value) {
+      post.value.likes = response.data.likes
+    }
   } catch (error) {
     console.error('点赞失败:', error)
+    alert('操作失败，请重试')
+  } finally {
+    liking.value = false
   }
 }
 
@@ -246,9 +286,10 @@ const goBack = () => {
   router.push('/')
 }
 
-onMounted(() => {
-  fetchPost()
-  fetchComments()
+onMounted(async () => {
+  await fetchPost()
+  await fetchComments()
+  await fetchLikeStatus()
 })
 </script>
 
@@ -320,6 +361,15 @@ onMounted(() => {
 .like-btn {
   font-size: 16px;
   padding: 10px 24px;
+}
+
+.liked-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.liked-btn:hover {
+  background-color: #c0392b;
 }
 
 .comments-section {

@@ -55,33 +55,50 @@ onMounted(() => {
 
 <style scoped>
 .home {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
+}
+
+.page-title {
+  font-size: 26px;
+  margin-bottom: 28px;
+  color: #2c3e50;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #4a90d9;
 }
 
 .loading,
 .empty {
   text-align: center;
-  padding: 40px;
+  padding: 60px;
   color: #95a5a6;
+  font-size: 16px;
+}
+
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .post-item {
   transition: transform 0.2s, box-shadow 0.2s;
+  padding: 28px;
 }
 
 .post-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .post-header {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .post-title {
-  font-size: 20px;
-  margin-bottom: 8px;
+  font-size: 22px;
+  margin-bottom: 12px;
+  font-weight: 600;
 }
 
 .post-title a {
@@ -96,25 +113,39 @@ onMounted(() => {
   font-size: 14px;
   color: #7f8c8d;
   display: flex;
-  gap: 16px;
+  gap: 20px;
+}
+
+.post-meta span {
+  display: flex;
+  align-items: center;
 }
 
 .post-summary {
   color: #555;
-  margin-bottom: 16px;
-  line-height: 1.7;
+  margin-bottom: 20px;
+  line-height: 1.8;
+  font-size: 15px;
 }
 
 .post-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
 }
 
 .post-stats {
   display: flex;
-  gap: 16px;
+  gap: 24px;
   color: #7f8c8d;
   font-size: 14px;
+}
+
+.post-stats span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 </style>

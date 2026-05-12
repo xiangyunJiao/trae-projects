@@ -36,32 +36,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { authApi } from './api'
-import type { User } from './types'
+import { useAuth } from './store/auth'
 
 const router = useRouter()
-
-const currentUser = ref<User | null>(null)
-
-const isAdmin = computed(() => {
-  return currentUser.value?.role === 'admin'
-})
-
-const checkAuth = async () => {
-  const token = localStorage.getItem('token')
-  const userStr = localStorage.getItem('user')
-  
-  if (token && userStr) {
-    try {
-      currentUser.value = JSON.parse(userStr)
-    } catch (e) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-    }
-  }
-}
+const { currentUser, isAdmin, initAuth, clearUser } = useAuth()
 
 const handleLogout = async () => {
   try {
@@ -70,14 +51,12 @@ const handleLogout = async () => {
     console.log('Logout API error', e)
   }
   
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
-  currentUser.value = null
+  clearUser()
   router.push('/')
 }
 
 onMounted(() => {
-  checkAuth()
+  initAuth()
 })
 </script>
 

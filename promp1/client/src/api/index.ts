@@ -28,13 +28,20 @@ api.interceptors.response.use(
   }
 )
 
+export interface LikeResponse {
+  likes: number
+  hasLiked: boolean
+  action?: 'liked' | 'unliked'
+}
+
 export const postApi = {
   getPosts: () => api.get<Post[]>('/posts'),
   getPost: (id: number) => api.get<Post>(`/posts/${id}`),
   createPost: (data: CreatePostForm & { tags: string[] }) => api.post<Post>('/posts', data),
   updatePost: (id: number, data: Partial<Post>) => api.put<Post>(`/posts/${id}`, data),
   deletePost: (id: number) => api.delete(`/posts/${id}`),
-  likePost: (id: number) => api.post<{ likes: number }>(`/posts/${id}/like`)
+  getLikeStatus: (id: number) => api.get<LikeResponse>(`/posts/${id}/like-status`),
+  toggleLike: (id: number) => api.post<LikeResponse>(`/posts/${id}/like`)
 }
 
 export const commentApi = {

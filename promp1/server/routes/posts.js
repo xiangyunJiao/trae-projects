@@ -1,10 +1,11 @@
 import express from 'express';
-import { posts } from '../data/mockData.js';
+import { posts, likes } from '../data/mockData.js';
 import { authMiddleware, adminMiddleware } from '../middleware/auth.js';
 
 const router = express.Router();
 
 let postsData = [...posts];
+let likesData = [...likes];
 let nextId = postsData.length + 1;
 
 router.get('/', (req, res) => {
@@ -64,17 +65,64 @@ router.delete('/:id', authMiddleware, adminMiddleware, (req, res) => {
   }
 
   postsData.splice(index, 1);
+  likesData = likesData.filter(l => l.postId !== parseInt(req.params.id));
   res.status(204).send();
 });
 
-router.post('/:id/like', (req, res) => {
-  const post = postsData.find(p => p.id === parseInt(req.params.id));
+router.get('/:id/like-status', authMiddleware, (req, res) => {
+  const postId = parseInt(req.params.id);
+  const userId = req.user.userId;
+  
+  const post = postsData.find(p => p.id === postId);
   if (!post) {
     return res.status(404).json({ error: '文章不存在' });
   }
 
-  post.likes = (post.likes || 0) + 1;
-  res.json({ likes: post.likes });
+  const hasLiked = likesData.some(l => l.postId === postId && l.userId === userId);
+  const likesCount = likesData.filter(l => l.postId === postId).length;
+  post.likes = likesCount;
+
+  res.json({
+    likes: likesCount,
+    hasLiked
+  });
+});
+
+router.post('/:id/like', authMiddleware, (req, res) => {
+  const postId = parseInt(req.params.id);
+  const userId = req.user.userId;
+
+  const post = postsData.find(p => p.id === postId);
+  if (!post) {
+    return res.status(404).json({ error: '文章不存在' });
+  }
+
+  const existingLike = likesData.find(l => l.postId === postId && l.userId === userId);
+  
+  if (existingLike) {
+    likesData = likesData.filter(l => !(l.postId === postId && l.userId === userId));
+    const likesCount = likesData.filter(l => l.postId === postId).length;
+    post.likes = likesCount;
+    return res.json({ 
+      likes: likesCount, 
+      hasLiked: false,
+      action: 'unliked'
+    });
+  } else {
+    likesData.push({
+      id: Date.now(),
+      postId,
+      userId,
+      createdAt: new Date().toISOString().split('T')[0]
+    });
+    const likesCount = likesData.filter(l => l.postId === postId).length;
+    post.likes = likesCount;
+    return res.json({ 
+      likes: likesCount, 
+      hasLiked: true,
+      action: 'liked'
+    });
+  }
 });
 
 export default router;
