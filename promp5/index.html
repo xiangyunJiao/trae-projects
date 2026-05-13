@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快乐识字 - 儿童早教阅读</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">📚</span>
+                <h1>快乐识字</h1>
+            </div>
+            <nav class="nav">
+                <button id="btn-home" class="nav-btn active">首页</button>
+                <button id="btn-stories" class="nav-btn">故事</button>
+            </nav>
+        </header>
+
+        <main id="main-content">
+            <section id="home-page" class="page">
+                <div class="hero">
+                    <h2>欢迎来到快乐识字乐园！</h2>
+                    <p>边读故事边识字，让学习变得有趣又简单</p>
+                    <div class="hero-features">
+                        <div class="feature">
+                            <span class="feature-icon">🎵</span>
+                            <span>语音朗读</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🔤</span>
+                            <span>拼音标注</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📖</span>
+                            <span>分级阅读</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">⭐</span>
+                            <span>重点复习</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="levels-section">
+                    <h3>选择难度级别</h3>
+                    <div class="levels-grid" id="levels-grid">
+                    </div>
+                </div>
+            </section>
+
+            <section id="stories-page" class="page hidden">
+                <div class="page-header">
+                    <button id="back-to-home" class="back-btn">← 返回首页</button>
+                    <h2 id="current-level-title">故事列表</h2>
+                </div>
+                <div class="stories-grid" id="stories-grid">
+                </div>
+            </section>
+
+            <section id="reading-page" class="page hidden">
+                <div class="page-header">
+                    <button id="back-to-stories" class="back-btn">← 返回列表</button>
+                    <h2 id="story-title">故事标题</h2>
+                    <div class="reading-controls">
+                        <button id="play-all" class="control-btn" title="朗读全文">
+                            <span>🔊</span> 朗读
+                        </button>
+                        <button id="play-auto-review" class="control-btn" title="自动朗读并复习">
+                            <span>🎯</span> 自动复习
+                        </button>
+                        <button id="stop-play" class="control-btn" title="停止朗读">
+                            <span>⏹️</span> 停止
+                        </button>
+                    </div>
+                </div>
+
+                <div class="story-content" id="story-content">
+                </div>
+
+                <div class="reading-footer">
+                    <button id="to-review" class="review-btn">开始复习 →</button>
+                </div>
+            </section>
+
+            <section id="review-page" class="page hidden">
+                <div class="page-header">
+                    <button id="back-to-reading" class="back-btn">← 返回阅读</button>
+                    <h2>重点字复习</h2>
+                </div>
+
+                <div class="review-intro">
+                    <p>让我们一起来复习今天学到的字吧！</p>
+                    <p>点击每个字可以听发音和拼读</p>
+                </div>
+
+                <div class="review-grid" id="review-grid">
+                </div>
+
+                <div class="review-footer">
+                    <button id="play-all-review" class="control-btn">
+                        <span>🔊</span> 朗读所有字
+                    </button>
+                    <button id="finish-review" class="finish-btn">完成复习 ✓</button>
+                </div>
+            </section>
+
+            <section id="finish-page" class="page hidden">
+                <div class="finish-container">
+                    <div class="finish-animation">
+                        <span class="star">⭐</span>
+                        <span class="star">🌟</span>
+                        <span class="star">✨</span>
+                    </div>
+                    <h2>太棒了！</h2>
+                    <p>你已经完成了这篇故事的学习</p>
+                    <p>继续加油，你真是个爱学习的小朋友！</p>
+                    <div class="finish-buttons">
+                        <button id="go-home" class="finish-btn">返回首页</button>
+                        <button id="read-more" class="finish-btn">再读一个故事</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>快乐识字 - 让每个孩子爱上阅读</p>
+        </footer>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

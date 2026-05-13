@@ -1,0 +1,23 @@
+{
+  "name": "svga-compressor",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "pako": "^2.1.0",
+    "protobufjs": "^8.2.0",
+    "svga-parser": "^1.9.7",
+    "svga.lite": "^1.5.5",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.5"
+  }
+}
