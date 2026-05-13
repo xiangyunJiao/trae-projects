@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>儿童拼音学习</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="header">
+      <h1><span>🎈</span> 儿童拼音学习</h1>
+    </header>
+
+    <main class="content">
+      <div id="page-home" class="page active">
+        <div class="menu-grid">
+          <div class="menu-card red" onclick="App.navigateTo('shengmu')">
+            <span class="menu-icon">🅰️</span>
+            <div class="menu-title">声母学习</div>
+            <div class="menu-desc">23个声母发音</div>
+          </div>
+          <div class="menu-card cyan" onclick="App.navigateTo('yunmu')">
+            <span class="menu-icon">🔤</span>
+            <div class="menu-title">韵母学习</div>
+            <div class="menu-desc">24个韵母发音</div>
+          </div>
+          <div class="menu-card yellow" onclick="App.navigateTo('zhengti')">
+            <span class="menu-icon">📚</span>
+            <div class="menu-title">整体认读</div>
+            <div class="menu-desc">16个整体认读音节</div>
+          </div>
+          <div class="menu-card purple" onclick="App.navigateTo('combine')">
+            <span class="menu-icon">🔗</span>
+            <div class="menu-title">组合发音</div>
+            <div class="menu-desc">两拼三拼音节</div>
+          </div>
+          <div class="menu-card green" onclick="App.navigateTo('chars')">
+            <span class="menu-icon">📖</span>
+            <div class="menu-title">汉字学习</div>
+            <div class="menu-desc">500个常用汉字</div>
+          </div>
+          <div class="menu-card blue" onclick="App.navigateTo('exam-select')">
+            <span class="menu-icon">📝</span>
+            <div class="menu-title">开始考试</div>
+            <div class="menu-desc">发音测试挑战</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-shengmu" class="page">
+        <button class="back-btn" onclick="App.goBack()">← 返回首页</button>
+        <h2 class="section-title">声母学习</h2>
+        <div id="shengmu-grid" class="pinyin-grid"></div>
+      </div>
+
+      <div id="page-yunmu" class="page">
+        <button class="back-btn" onclick="App.goBack()">← 返回首页</button>
+        <h2 class="section-title">韵母学习</h2>
+        <div class="category-tabs" id="yunmu-tabs">
+          <button class="tab-btn active" onclick="App.switchYunmuTab('dan')">单韵母</button>
+          <button class="tab-btn" onclick="App.switchYunmuTab('fu')">复韵母</button>
+          <button class="tab-btn" onclick="App.switchYunmuTab('qianbi')">前鼻韵母</button>
+          <button class="tab-btn" onclick="App.switchYunmuTab('houbi')">后鼻韵母</button>
+        </div>
+        <div id="yunmu-grid" class="pinyin-grid"></div>
+      </div>
+
+      <div id="page-zhengti" class="page">
+        <button class="back-btn" onclick="App.goBack()">← 返回首页</button>
+        <h2 class="section-title">整体认读音节</h2>
+        <div id="zhengti-grid" class="pinyin-grid"></div>
+      </div>
+
+      <div id="page-combine" class="page">
+        <button class="back-btn" onclick="App.goBack()">← 返回首页</button>
+        <h2 class="section-title">组合发音</h2>
+        <div class="category-tabs" id="combine-tabs">
+          <button class="tab-btn active" onclick="App.switchCombineTab('liangpin')">两拼音节</button>
+          <button class="tab-btn" onclick="App.switchCombineTab('sanpin')">三拼音节</button>
+        </div>
+        <div id="combine-grid" class="pinyin-grid"></div>
+      </div>
+
+      <div id="page-chars" class="page">
+        <button class="back-btn" onclick="App.goBack()">← 返回首页</button>
+        <h2 class="section-title">汉字学习</h2>
+        <div class="level-cards" id="level-cards"></div>
+      </div>
+
+      <div id="page-groups" class="page">
+        <button class="back-btn" onclick="App.navigateTo('chars')">← 返回等级</button>
+        <h2 class="section-title" id="group-title">选择学习组</h2>
+        <div class="groups-grid" id="groups-grid"></div>
+      </div>
+
+      <div id="page-char-study" class="page">
+        <button class="back-btn" onclick="App.backToGroups()">← 返回分组</button>
+        <h2 class="section-title" id="study-title">学习组</h2>
+        <div class="chars-grid" id="chars-grid"></div>
+        <div class="action-bar">
+          <button class="btn btn-accent" onclick="App.checkinGroup()">📅 今日打卡</button>
+          <button class="btn btn-green" onclick="App.playAllChars()">🔊 全部朗读</button>
+        </div>
+      </div>
+
+      <div id="page-exam-select" class="page">
+        <button class="back-btn" onclick="App.goBack()">← 返回首页</button>
+        <h2 class="section-title">选择考试</h2>
+        <div class="exam-select">
+          <div class="exam-type-cards" id="exam-type-cards">
+            <div class="exam-type-card" data-type="shengmu" onclick="App.selectExamType('shengmu')">
+              <span class="exam-type-icon">🅰️</span>
+              <div class="exam-type-info">
+                <div class="exam-type-title">声母考试</div>
+                <div class="exam-type-desc">测试23个声母发音</div>
+              </div>
+            </div>
+            <div class="exam-type-card" data-type="yunmu" onclick="App.selectExamType('yunmu')">
+              <span class="exam-type-icon">🔤</span>
+              <div class="exam-type-info">
+                <div class="exam-type-title">韵母考试</div>
+                <div class="exam-type-desc">测试24个韵母发音</div>
+              </div>
+            </div>
+            <div class="exam-type-card" data-type="combine" onclick="App.selectExamType('combine')">
+              <span class="exam-type-icon">🔗</span>
+              <div class="exam-type-info">
+                <div class="exam-type-title">组合发音考试</div>
+                <div class="exam-type-desc">测试两拼三拼音节</div>
+              </div>
+            </div>
+            <div class="exam-type-card" data-type="chars" onclick="App.selectExamType('chars')">
+              <span class="exam-type-icon">📖</span>
+              <div class="exam-type-info">
+                <div class="exam-type-title">汉字发音考试</div>
+                <div class="exam-type-desc">测试常用汉字发音</div>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin: 20px 0 15px; font-size: 18px; color: var(--text-dark);">选择难度</h3>
+          <div class="difficulty-buttons">
+            <div class="difficulty-btn" data-difficulty="EASY" onclick="App.selectDifficulty('EASY')">
+              <span class="difficulty-icon">😊</span>
+              <div class="difficulty-name">简单</div>
+              <div style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">10题</div>
+            </div>
+            <div class="difficulty-btn selected" data-difficulty="MEDIUM" onclick="App.selectDifficulty('MEDIUM')">
+              <span class="difficulty-icon">😐</span>
+              <div class="difficulty-name">中等</div>
+              <div style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">15题</div>
+            </div>
+            <div class="difficulty-btn" data-difficulty="HARD" onclick="App.selectDifficulty('HARD')">
+              <span class="difficulty-icon">😤</span>
+              <div class="difficulty-name">困难</div>
+              <div style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">20题</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 30px;">
+            <button class="btn btn-primary btn-large" onclick="App.startExam()">
+              🚀 开始考试
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-exam" class="page">
+        <div class="exam-card">
+          <div class="exam-progress" id="exam-progress"></div>
+          <div class="exam-question" id="exam-question"></div>
+          <div class="exam-hint" id="exam-hint">点击下方按钮，念出这个拼音/汉字</div>
+          <button class="record-btn" id="record-btn" onclick="App.recordAnswer()">
+            🎤
+          </button>
+          <div class="record-hint" id="record-hint">点击开始录音</div>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-secondary btn-large" onclick="App.playQuestion()">🔊 听示范</button>
+          <button class="btn btn-outline btn-large" onclick="App.skipQuestion()">跳过</button>
+        </div>
+      </div>
+
+      <div id="page-exam-result" class="page">
+        <div class="result-card">
+          <div class="result-score" id="result-score">0</div>
+          <div class="result-grade" id="result-grade">不及格</div>
+          <div class="result-stats">
+            <div class="stat-item">
+              <div class="stat-num correct" id="result-correct">0</div>
+              <div class="stat-label">答对</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num wrong" id="result-wrong">0</div>
+              <div class="stat-label">答错</div>
+            </div>
+          </div>
+          <div id="result-wrong-list" style="margin-top: 20px;"></div>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 12px;">
+          <button class="btn btn-primary btn-large" onclick="App.retryExam()">🔄 再考一次</button>
+          <button class="btn btn-secondary btn-large" onclick="App.navigateTo('home')">🏠 返回首页</button>
+        </div>
+      </div>
+
+      <div id="page-stats" class="page">
+        <h2 class="section-title">学习统计</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-icon">📚</div>
+            <div class="stat-card-num" id="stat-learned">0</div>
+            <div class="stat-card-label">已学汉字</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">📝</div>
+            <div class="stat-card-num" id="stat-total">0</div>
+            <div class="stat-card-label">总汉字数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">🎯</div>
+            <div class="stat-card-num" id="stat-percentage">0%</div>
+            <div class="stat-card-label">完成进度</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">🏆</div>
+            <div class="stat-card-num" id="stat-exams">0</div>
+            <div class="stat-card-label">考试次数</div>
+          </div>
+        </div>
+
+        <div class="checkin-streak">
+          <span class="streak-icon">🔥</span>
+          <div class="streak-info">
+            <div class="streak-text">连续打卡</div>
+            <div class="streak-num" id="streak-num">0 天</div>
+          </div>
+          <button class="btn btn-primary" id="checkin-btn" onclick="App.doCheckin()">
+            立即打卡
+          </button>
+        </div>
+
+        <div class="learned-chars-section">
+          <div class="history-title">
+            <span>📖</span> 已学汉字
+          </div>
+          <div class="learned-chars-grid" id="learned-chars-grid"></div>
+        </div>
+
+        <div class="exam-history">
+          <div class="history-title">
+            <span>📊</span> 考试记录
+          </div>
+          <div class="history-list" id="exam-history-list"></div>
+        </div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <div class="nav-item active" onclick="App.switchNav('home')">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">首页</span>
+      </div>
+      <div class="nav-item" onclick="App.switchNav('chars')">
+        <span class="nav-icon">📖</span>
+        <span class="nav-label">汉字</span>
+      </div>
+      <div class="nav-item" onclick="App.switchNav('exam-select')">
+        <span class="nav-icon">📝</span>
+        <span class="nav-label">考试</span>
+      </div>
+      <div class="nav-item" onclick="App.switchNav('stats')">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">统计</span>
+      </div>
+    </nav>
+
+    <div id="feedback-overlay" class="feedback-overlay hidden">
+      <div class="feedback-card">
+        <div class="feedback-icon" id="feedback-icon">✅</div>
+        <div class="feedback-text" id="feedback-text">回答正确！</div>
+        <div class="feedback-answer" id="feedback-answer"></div>
+      </div>
+    </div>
+
+    <div id="confirm-dialog" class="confirm-dialog hidden">
+      <div class="confirm-card">
+        <div class="confirm-icon" id="confirm-icon">❓</div>
+        <div class="confirm-title" id="confirm-title">确认</div>
+        <div class="confirm-text" id="confirm-text">确定要执行这个操作吗？</div>
+        <div class="confirm-buttons">
+          <button class="btn btn-outline" onclick="App.closeConfirm(false)">取消</button>
+          <button class="btn btn-primary" onclick="App.closeConfirm(true)">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/exam.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

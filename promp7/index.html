@@ -3,728 +3,1964 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>趣味英语乐园</title>
+    <title>趣味英语乐园 - 早教儿童英语</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
         body {
-            font-family: 'Microsoft YaHei', sans-serif;
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
+            touch-action: manipulation;
         }
-        .container { max-width: 500px; margin: 0 auto; min-height: 100vh; }
-        
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
         /* 主菜单 */
-        #mainMenu {
+        .menu-screen {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            height: 100%;
             padding: 20px;
+            animation: fadeIn 0.5s ease;
         }
-        h1 {
+
+        .logo {
+            font-size: 3em;
             color: #fff;
-            font-size: 36px;
-            margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            animation: bounce 2s infinite;
+            margin-bottom: 10px;
         }
+
         .subtitle {
-            color: #fff;
-            font-size: 16px;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2em;
             margin-bottom: 40px;
-            opacity: 0.9;
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+
         .menu-btn {
-            width: 280px;
-            padding: 18px;
-            margin: 12px;
+            width: 80%;
+            padding: 20px;
+            margin: 10px 0;
             border: none;
-            border-radius: 50px;
-            font-size: 20px;
+            border-radius: 25px;
+            font-size: 1.3em;
             font-weight: bold;
-            color: #fff;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .menu-btn:hover { transform: scale(1.05); }
-        .menu-btn:active { transform: scale(0.95); }
-        .btn-game { background: linear-gradient(45deg, #FF6B6B, #FF8E53); }
-        .btn-learn { background: linear-gradient(45deg, #4ECDC4, #44A08D); }
-        .btn-exam { background: linear-gradient(45deg, #A8EDEA, #667eea); }
-        .btn-progress { background: linear-gradient(45deg, #f093fb, #f5576c); }
-        
-        /* 通用页面样式 */
-        .page {
+
+        .menu-btn:active {
+            transform: scale(0.95);
+        }
+
+        .menu-btn.game {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .menu-btn.learn {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .menu-btn.exam {
+            background: linear-gradient(45deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .menu-btn.progress {
+            background: linear-gradient(45deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        /* 情景选择 */
+        .category-screen, .game-screen, .learn-screen, .exam-screen, .progress-screen {
             display: none;
-            min-height: 100vh;
-            padding: 15px;
+            height: 100%;
+            animation: fadeIn 0.3s ease;
         }
-        .page.active { display: block; }
-        .header {
+
+        .category-screen.active, .game-screen.active, .learn-screen.active, .exam-screen.active, .progress-screen.active {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
+            flex-direction: column;
         }
+
+        .screen-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+        }
+
         .back-btn {
             background: rgba(255,255,255,0.2);
             border: none;
-            color: #fff;
+            color: white;
             padding: 10px 20px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 1em;
         }
-        .page-title {
-            color: #fff;
-            font-size: 24px;
-            text-align: center;
+
+        .screen-title {
             flex: 1;
+            text-align: center;
+            color: white;
+            font-size: 1.3em;
+            font-weight: bold;
         }
-        
-        /* 情景选择 */
+
         .category-grid {
+            flex: 1;
+            padding: 20px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-bottom: 20px;
+            overflow-y: auto;
         }
+
         .category-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 15px;
+            background: white;
+            border-radius: 20px;
             padding: 20px 10px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.2s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .category-card:hover { transform: translateY(-5px); }
-        .category-card.selected {
-            background: #FFD700;
-            transform: scale(1.02);
+
+        .category-card:active {
+            transform: scale(0.95);
         }
-        .category-icon { font-size: 40px; margin-bottom: 10px; }
-        .category-name { font-size: 18px; font-weight: bold; color: #333; }
-        .category-count { font-size: 12px; color: #666; margin-top: 5px; }
-        
-        .start-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
-            border: none;
-            border-radius: 50px;
-            color: #fff;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        
-        /* 游戏画布 */
-        #gameCanvas {
-            width: 100%;
-            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 70%, #8FBC8F 70%, #228B22 100%);
-            border-radius: 15px;
-            display: block;
-            touch-action: none;
-        }
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
+
+        .category-icon {
+            font-size: 3em;
             margin-bottom: 10px;
         }
-        
-        /* 学习模式 */
-        .word-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 30px 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
+
+        .category-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
         }
-        .word-emoji { font-size: 80px; margin-bottom: 20px; }
-        .word-english { font-size: 36px; font-weight: bold; color: #333; margin-bottom: 10px; }
-        .word-chinese { font-size: 24px; color: #666; margin-bottom: 20px; }
-        .speak-btn {
-            background: linear-gradient(45deg, #4ECDC4, #44A08D);
-            border: none;
-            color: #fff;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-size: 18px;
-            cursor: pointer;
+
+        .category-count {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
         }
-        .nav-buttons {
+
+        /* 游戏界面 */
+        .game-canvas {
+            flex: 1;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F7FA 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-info-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
-            gap: 15px;
+            background: rgba(0,0,0,0.1);
+            z-index: 10;
         }
-        .nav-btn {
-            flex: 1;
-            padding: 15px;
+
+        .score-display, .combo-display {
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .score-display {
+            color: #f5576c;
+        }
+
+        .combo-display {
+            color: #43e97b;
+        }
+
+        .falling-item {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: none;
+        }
+
+        .falling-emoji {
+            font-size: 3em;
+        }
+
+        .falling-word {
+            font-size: 0.7em;
+            font-weight: bold;
+            color: #333;
+            background: rgba(255,255,255,0.8);
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+
+        .cart {
+            position: absolute;
+            bottom: 20px;
+            width: 100px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: left 0.1s linear;
+        }
+
+        .cart-emoji {
+            font-size: 3.5em;
+        }
+
+        /* 游戏控制区域 */
+        .game-controls {
+            padding: 20px;
+            background: rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .control-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
             border: none;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: bold;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 2em;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
         }
-        .nav-btn.prev { background: #e0e0e0; color: #333; }
-        .nav-btn.next { background: linear-gradient(45deg, #667eea, #764ba2); color: #fff; }
-        
-        /* 考试模式 */
-        .exam-container { text-align: center; }
-        .exam-emoji { font-size: 100px; margin: 30px 0; animation: pulse 1s infinite; }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+
+        .control-btn:active {
+            transform: scale(0.9);
         }
-        .exam-hint {
-            color: #fff;
-            font-size: 18px;
+
+        /* 学习模式 */
+        .learn-container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .flashcard {
+            width: 90%;
+            max-width: 350px;
+            background: white;
+            border-radius: 30px;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .flashcard-emoji {
+            font-size: 8em;
             margin-bottom: 20px;
         }
-        .timer {
-            font-size: 48px;
-            color: #FFD700;
+
+        .flashcard-en {
+            font-size: 2.5em;
             font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .flashcard-zh {
+            font-size: 1.5em;
+            color: #666;
             margin-bottom: 20px;
         }
+
+        .speak-btn {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .learn-nav {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 350px;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .card-indicator {
+            text-align: center;
+            color: white;
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+
+        /* 考试模式 */
+        .exam-container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .exam-card {
+            width: 90%;
+            max-width: 350px;
+            background: white;
+            border-radius: 30px;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .exam-emoji {
+            font-size: 8em;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            font-size: 3em;
+            font-weight: bold;
+            color: #f5576c;
+            margin-bottom: 20px;
+        }
+
+        .exam-status {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
         .record-btn {
             width: 100px;
             height: 100px;
             border-radius: 50%;
             border: none;
-            font-size: 18px;
-            font-weight: bold;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            font-size: 2.5em;
             cursor: pointer;
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
-        .record-btn.idle { background: #FF6B6B; color: #fff; }
-        .record-btn.listening { background: #4ECDC4; color: #fff; animation: pulse 0.5s infinite; }
-        
-        /* 进度页面 */
-        .progress-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+
+        .record-btn:active {
+            transform: scale(0.9);
         }
-        .stat-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
+
+        .record-btn.recording {
+            background: linear-gradient(45deg, #ff416c 0%, #ff4b2b 100%);
+            animation: pulse 1s infinite;
         }
-        .stat-number { font-size: 36px; font-weight: bold; }
-        .stat-number.learned { color: #44A08D; }
-        .stat-number.learning { color: #FF8E53; }
-        .stat-label { font-size: 14px; color: #666; margin-top: 5px; }
-        
-        .word-list {
-            background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .word-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
-        .word-item:last-child { border-bottom: none; }
-        .word-info { display: flex; align-items: center; }
-        .word-item-emoji { font-size: 30px; margin-right: 15px; }
-        .word-text { font-size: 16px; font-weight: bold; color: #333; }
-        .word-status {
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
+
+        .result-display {
+            font-size: 2em;
             font-weight: bold;
+            margin-top: 20px;
         }
-        .status-learned { background: #D4EDDA; color: #155724; }
-        .status-learning { background: #FFF3CD; color: #856404; }
-        
-        /* 结果弹窗 */
-        .modal {
-            display: none;
+
+        .result-display.correct {
+            color: #43e97b;
+        }
+
+        .result-display.wrong {
+            color: #f5576c;
+        }
+
+        /* 进度页面 */
+        .progress-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: linear-gradient(180deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .progress-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .progress-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #43e97b 0%, #38f9d7 100%);
+            transition: width 0.5s ease;
+        }
+
+        .progress-numbers {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .word-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .word-tag {
+            background: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .word-tag.learned {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .word-tag.learning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* 游戏结束弹窗 */
+        .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.5);
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
         }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: #fff;
-            border-radius: 20px;
-            padding: 30px;
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 30px;
+            padding: 40px 30px;
             text-align: center;
             max-width: 80%;
             animation: popIn 0.3s ease;
         }
-        @keyframes popIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+
+        .modal-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
         }
-        .modal-title { font-size: 28px; font-weight: bold; margin-bottom: 20px; }
-        .modal-score { font-size: 48px; font-weight: bold; color: #FF6B6B; margin-bottom: 10px; }
-        .modal-subtitle { font-size: 16px; color: #666; margin-bottom: 20px; }
+
+        .modal-score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #f5576c;
+            margin-bottom: 10px;
+        }
+
+        .modal-subtext {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
         .modal-btn {
-            padding: 12px 30px;
+            padding: 15px 30px;
             border: none;
             border-radius: 25px;
-            font-size: 16px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: #eee;
+            color: #333;
+        }
+
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .catch-effect {
+            position: absolute;
+            font-size: 2em;
+            animation: catchAnim 0.5s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes catchAnim {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(2) translateY(-50px); }
+        }
+
+        /* 连击特效 */
+        .combo-effect {
+            position: absolute;
+            font-size: 3em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: comboAnim 1s ease forwards;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        @keyframes comboAnim {
+            0% { opacity: 1; transform: scale(0.5) translateY(0); }
+            50% { transform: scale(1.2) translateY(-30px); }
+            100% { opacity: 0; transform: scale(1) translateY(-60px); }
+        }
+
+        /* 隐藏屏幕 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            padding: 40px;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* 开始游戏按钮 */
+        .start-game-btn {
+            width: 100%;
+            padding: 20px;
+            margin-top: 10px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.3em;
             font-weight: bold;
             cursor: pointer;
-            margin: 5px;
         }
-        .modal-btn.primary { background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: #fff; }
-        .modal-btn.secondary { background: #e0e0e0; color: #333; }
-        
-        /* 组合效果 */
-        .combo-effect {
-            position: fixed;
+
+        /* 游戏提示 */
+        .game-tip {
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 60px;
-            font-weight: bold;
-            color: #FFD700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            animation: comboAnim 0.8s ease-out forwards;
-            z-index: 999;
-            pointer-events: none;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            font-size: 1.2em;
+            text-align: center;
+            z-index: 15;
+            display: none;
         }
-        @keyframes comboAnim {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
-            100% { transform: translate(-50%, -60%) scale(1); opacity: 0; }
+
+        .game-tip.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="app-container">
         <!-- 主菜单 -->
-        <div id="mainMenu" class="page active">
-            <h1>🎉 趣味英语乐园</h1>
-            <p class="subtitle">边玩边学，快乐成长！</p>
-            <button class="menu-btn btn-game" onclick="showPage('gameCategory')">🎮 趣味游戏</button>
-            <button class="menu-btn btn-learn" onclick="showPage('learnCategory')">📚 学习单词</button>
-            <button class="menu-btn btn-exam" onclick="showPage('examCategory')">🎤 口语考试</button>
-            <button class="menu-btn btn-progress" onclick="showProgressPage()">📊 学习进度</button>
+        <div id="menuScreen" class="menu-screen">
+            <div class="logo">🎈 趣味英语乐园</div>
+            <div class="subtitle">让孩子快乐学英语</div>
+            <button class="menu-btn game" onclick="showCategorySelect('game')">🎮 游戏模式</button>
+            <button class="menu-btn learn" onclick="showCategorySelect('learn')">📚 学习模式</button>
+            <button class="menu-btn exam" onclick="showCategorySelect('exam')">🎤 考试模式</button>
+            <button class="menu-btn progress" onclick="showProgress()">📊 学习进度</button>
         </div>
-        
-        <!-- 游戏情景选择 -->
-        <div id="gameCategory" class="page">
-            <div class="header">
-                <button class="back-btn" onclick="showPage('mainMenu')">← 返回</button>
-                <h2 class="page-title">选择情景</h2>
-                <div style="width: 60px;"></div>
+
+        <!-- 情景选择 -->
+        <div id="categoryScreen" class="category-screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="backToMenu()">← 返回</button>
+                <div class="screen-title" id="categoryTitle">选择情景</div>
+                <div style="width: 80px;"></div>
             </div>
-            <div class="category-grid" id="gameCategoryGrid"></div>
-            <button class="start-btn" onclick="startGame()">🚀 开始游戏</button>
-        </div>
-        
-        <!-- 游戏页面 -->
-        <div id="gamePage" class="page">
-            <div class="header">
-                <button class="back-btn" onclick="endGame()">← 结束</button>
-                <h2 class="page-title" id="currentGameCategory">游戏中</h2>
-                <div style="width: 60px;"></div>
-            </div>
-            <div class="game-info">
-                <span>得分: <span id="gameScore">0</span></span>
-                <span>连击: <span id="gameCombo">0</span></span>
-                <span>生命: <span id="gameLives">❤️❤️❤️</span></span>
-            </div>
-            <canvas id="gameCanvas"></canvas>
-        </div>
-        
-        <!-- 学习情景选择 -->
-        <div id="learnCategory" class="page">
-            <div class="header">
-                <button class="back-btn" onclick="showPage('mainMenu')">← 返回</button>
-                <h2 class="page-title">选择类别</h2>
-                <div style="width: 60px;"></div>
-            </div>
-            <div class="category-grid" id="learnCategoryGrid"></div>
-        </div>
-        
-        <!-- 学习页面 -->
-        <div id="learnPage" class="page">
-            <div class="header">
-                <button class="back-btn" onclick="showPage('learnCategory')">← 返回</button>
-                <h2 class="page-title" id="learnCategoryTitle">学习</h2>
-                <span id="learnProgress" style="color: #fff; font-size: 14px;">1/10</span>
-            </div>
-            <div class="word-card">
-                <div class="word-emoji" id="learnEmoji">🍎</div>
-                <div class="word-english" id="learnEnglish">apple</div>
-                <div class="word-chinese" id="learnChinese">苹果</div>
-                <button class="speak-btn" onclick="speakCurrentWord()">🔊 听发音</button>
-            </div>
-            <div class="nav-buttons">
-                <button class="nav-btn prev" onclick="prevWord()">⬅️ 上一个</button>
-                <button class="nav-btn next" onclick="nextWord()">下一个 ➡️</button>
+            <div class="category-grid" id="categoryGrid"></div>
+            <div style="padding: 20px;">
+                <button id="startGameBtn" class="start-game-btn hidden" onclick="startGame()">开始游戏 🚀</button>
             </div>
         </div>
-        
-        <!-- 考试情景选择 -->
-        <div id="examCategory" class="page">
-            <div class="header">
-                <button class="back-btn" onclick="showPage('mainMenu')">← 返回</button>
-                <h2 class="page-title">选择考试类别</h2>
-                <div style="width: 60px;"></div>
+
+        <!-- 游戏界面 -->
+        <div id="gameScreen" class="game-screen">
+            <div class="game-canvas" id="gameCanvas">
+                <div class="game-info-bar">
+                    <div class="score-display">分数: <span id="score">0</span></div>
+                    <div class="combo-display">连击: <span id="combo">0</span></div>
+                </div>
+                <div class="game-tip" id="gameTip">准备好了吗？点击下方按钮开始！</div>
+                <div class="cart" id="cart">
+                    <div class="cart-emoji">🛒</div>
+                </div>
             </div>
-            <div class="category-grid" id="examCategoryGrid"></div>
+            <div class="game-controls">
+                <button class="control-btn" id="leftBtn">←</button>
+                <button class="control-btn" id="rightBtn">→</button>
+            </div>
         </div>
-        
-        <!-- 考试页面 -->
-        <div id="examPage" class="page">
-            <div class="header">
-                <button class="back-btn" onclick="endExam()">← 退出</button>
-                <h2 class="page-title" id="examCategoryTitle">考试</h2>
-                <span id="examProgress" style="color: #fff; font-size: 14px;">1/10</span>
+
+        <!-- 学习界面 -->
+        <div id="learnScreen" class="learn-screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="backToCategory()">← 返回</button>
+                <div class="screen-title">学习模式</div>
+                <div style="width: 80px;"></div>
+            </div>
+            <div class="learn-container">
+                <div class="flashcard">
+                    <div class="flashcard-emoji" id="learnEmoji">🍎</div>
+                    <div class="flashcard-en" id="learnEn">Apple</div>
+                    <div class="flashcard-zh" id="learnZh">苹果</div>
+                    <button class="speak-btn" onclick="speakCurrentWord()">🔊 朗读</button>
+                </div>
+                <div class="learn-nav">
+                    <button class="nav-btn" id="prevBtn" onclick="prevWord()">← 上一个</button>
+                    <button class="nav-btn" id="nextBtn" onclick="nextWord()">下一个 →</button>
+                </div>
+                <div class="card-indicator" id="cardIndicator">1 / 10</div>
+            </div>
+        </div>
+
+        <!-- 考试界面 -->
+        <div id="examScreen" class="exam-screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="backToCategory()">← 返回</button>
+                <div class="screen-title">考试模式</div>
+                <div style="width: 80px;"></div>
             </div>
             <div class="exam-container">
-                <div class="exam-emoji" id="examEmoji">🍎</div>
-                <p class="exam-hint" id="examHint">请读出这个单词！</p>
-                <div class="timer" id="examTimer">5</div>
-                <button class="record-btn idle" id="recordBtn" onclick="toggleRecording()">
-                    🎤 录音
-                </button>
-                <p style="color: #fff; margin-top: 20px; font-size: 14px;">点击按钮开始录音</p>
+                <div class="exam-card">
+                    <div class="exam-emoji" id="examEmoji">🍎</div>
+                    <div class="timer" id="examTimer">5</div>
+                    <div class="exam-status" id="examStatus">看着图片，说出这个单词！</div>
+                    <button class="record-btn" id="recordBtn" onclick="toggleRecording()">🎤</button>
+                    <div class="result-display" id="resultDisplay"></div>
+                </div>
+                <div class="card-indicator" id="examIndicator">1 / 10</div>
             </div>
         </div>
-        
-        <!-- 进度页面 -->
-        <div id="progressPage" class="page">
-            <div class="header">
-                <button class="back-btn" onclick="showPage('mainMenu')">← 返回</button>
-                <h2 class="page-title">学习进度</h2>
-                <div style="width: 60px;"></div>
+
+        <!-- 进度界面 -->
+        <div id="progressScreen" class="progress-screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="backToMenu()">← 返回</button>
+                <div class="screen-title">学习进度</div>
+                <div style="width: 80px;"></div>
             </div>
-            <div class="progress-stats">
-                <div class="stat-card">
-                    <div class="stat-number learned" id="totalLearned">0</div>
-                    <div class="stat-label">已掌握单词</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number learning" id="totalLearning">0</div>
-                    <div class="stat-label">学习中</div>
-                </div>
+            <div class="progress-container" id="progressContainer">
+                <!-- 进度内容将动态生成 -->
             </div>
-            <div class="word-list" id="progressWordList"></div>
         </div>
-        
-        <!-- 游戏结束弹窗 -->
-        <div id="gameOverModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-title">🎉 游戏结束</div>
-                <div class="modal-score" id="finalScore">0</div>
-                <div class="modal-subtitle">最高分: <span id="highScore">0</span></div>
+    </div>
+
+    <!-- 游戏结束弹窗 -->
+    <div class="modal-overlay" id="gameOverModal">
+        <div class="modal">
+            <div class="modal-title">🎉 游戏结束</div>
+            <div class="modal-score" id="finalScore">0</div>
+            <div class="modal-subtext">最高连击: <span id="maxCombo">0</span></div>
+            <div class="modal-btns">
+                <button class="modal-btn secondary" onclick="closeModal()">返回菜单</button>
                 <button class="modal-btn primary" onclick="restartGame()">再玩一次</button>
-                <button class="modal-btn secondary" onclick="backToMenu()">返回菜单</button>
-            </div>
-        </div>
-        
-        <!-- 考试结果弹窗 -->
-        <div id="examResultModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-title" id="examResultTitle">太棒了！</div>
-                <div class="modal-score" id="examResultScore">8/10</div>
-                <div class="modal-subtitle" id="examResultSubtitle">继续加油！</div>
-                <button class="modal-btn primary" onclick="restartExam()">再考一次</button>
-                <button class="modal-btn secondary" onclick="backToMenu()">返回菜单</button>
             </div>
         </div>
     </div>
 
     <script>
-        // 单词数据库
+        // ==================== 单词数据库 ====================
         const wordDatabase = {
             fruits: {
                 name: '水果类',
                 icon: '🍎',
                 words: [
-                    { emoji: '🍎', english: 'apple', chinese: '苹果' },
-                    { emoji: '🍌', english: 'banana', chinese: '香蕉' },
-                    { emoji: '🍊', english: 'orange', chinese: '橙子' },
-                    { emoji: '🍇', english: 'grape', chinese: '葡萄' },
-                    { emoji: '🍓', english: 'strawberry', chinese: '草莓' },
-                    { emoji: '🍉', english: 'watermelon', chinese: '西瓜' },
-                    { emoji: '🍑', english: 'peach', chinese: '桃子' },
-                    { emoji: '🍒', english: 'cherry', chinese: '樱桃' },
-                    { emoji: '🥝', english: 'kiwi', chinese: '猕猴桃' },
-                    { emoji: '🍋', english: 'lemon', chinese: '柠檬' }
+                    { en: 'Apple', zh: '苹果', emoji: '🍎' },
+                    { en: 'Banana', zh: '香蕉', emoji: '🍌' },
+                    { en: 'Orange', zh: '橙子', emoji: '🍊' },
+                    { en: 'Grapes', zh: '葡萄', emoji: '🍇' },
+                    { en: 'Watermelon', zh: '西瓜', emoji: '🍉' },
+                    { en: 'Strawberry', zh: '草莓', emoji: '🍓' },
+                    { en: 'Peach', zh: '桃子', emoji: '🍑' },
+                    { en: 'Pear', zh: '梨', emoji: '🍐' },
+                    { en: 'Pineapple', zh: '菠萝', emoji: '🍍' },
+                    { en: 'Mango', zh: '芒果', emoji: '🥭' },
+                    { en: 'Cherry', zh: '樱桃', emoji: '🍒' },
+                    { en: 'Lemon', zh: '柠檬', emoji: '🍋' }
                 ]
             },
             animals: {
                 name: '动物类',
                 icon: '🐶',
                 words: [
-                    { emoji: '🐶', english: 'dog', chinese: '狗' },
-                    { emoji: '🐱', english: 'cat', chinese: '猫' },
-                    { emoji: '🐦', english: 'bird', chinese: '鸟' },
-                    { emoji: '🐰', english: 'rabbit', chinese: '兔子' },
-                    { emoji: '🐘', english: 'elephant', chinese: '大象' },
-                    { emoji: '🦊', english: 'fox', chinese: '狐狸' },
-                    { emoji: '🐼', english: 'panda', chinese: '熊猫' },
-                    { emoji: '🦁', english: 'lion', chinese: '狮子' },
-                    { emoji: '🐯', english: 'tiger', chinese: '老虎' },
-                    { emoji: '🐸', english: 'frog', chinese: '青蛙' }
+                    { en: 'Dog', zh: '狗', emoji: '🐶' },
+                    { en: 'Cat', zh: '猫', emoji: '🐱' },
+                    { en: 'Bird', zh: '鸟', emoji: '🐦' },
+                    { en: 'Fish', zh: '鱼', emoji: '🐟' },
+                    { en: 'Rabbit', zh: '兔子', emoji: '🐰' },
+                    { en: 'Monkey', zh: '猴子', emoji: '🐵' },
+                    { en: 'Tiger', zh: '老虎', emoji: '🐯' },
+                    { en: 'Lion', zh: '狮子', emoji: '🦁' },
+                    { en: 'Elephant', zh: '大象', emoji: '🐘' },
+                    { en: 'Bear', zh: '熊', emoji: '🐻' },
+                    { en: 'Duck', zh: '鸭子', emoji: '🦆' },
+                    { en: 'Pig', zh: '猪', emoji: '🐷' }
                 ]
             },
             clothes: {
                 name: '衣服类',
                 icon: '👕',
                 words: [
-                    { emoji: '👕', english: 'shirt', chinese: '衬衫' },
-                    { emoji: '👖', english: 'pants', chinese: '裤子' },
-                    { emoji: '👗', english: 'dress', chinese: '连衣裙' },
-                    { emoji: '🧥', english: 'coat', chinese: '外套' },
-                    { emoji: '👟', english: 'shoes', chinese: '鞋子' },
-                    { emoji: '🧢', english: 'hat', chinese: '帽子' },
-                    { emoji: '🧦', english: 'socks', chinese: '袜子' },
-                    { emoji: '👜', english: 'bag', chinese: '包包' },
-                    { emoji: '🧣', english: 'scarf', chinese: '围巾' },
-                    { emoji: '👓', english: 'glasses', chinese: '眼镜' }
+                    { en: 'Shirt', zh: '衬衫', emoji: '👔' },
+                    { en: 'T-Shirt', zh: 'T恤', emoji: '👕' },
+                    { en: 'Pants', zh: '裤子', emoji: '👖' },
+                    { en: 'Dress', zh: '裙子', emoji: '👗' },
+                    { en: 'Shoes', zh: '鞋子', emoji: '👟' },
+                    { en: 'Hat', zh: '帽子', emoji: '🎩' },
+                    { en: 'Socks', zh: '袜子', emoji: '🧦' },
+                    { en: 'Coat', zh: '外套', emoji: '🧥' },
+                    { en: 'Sweater', zh: '毛衣', emoji: '🧶' },
+                    { en: 'Gloves', zh: '手套', emoji: '🧤' },
+                    { en: 'Scarf', zh: '围巾', emoji: '🧣' },
+                    { en: 'Boots', zh: '靴子', emoji: '🥾' }
                 ]
             },
             body: {
                 name: '人体类',
                 icon: '👤',
                 words: [
-                    { emoji: '👀', english: 'eye', chinese: '眼睛' },
-                    { emoji: '👃', english: 'nose', chinese: '鼻子' },
-                    { emoji: '👄', english: 'mouth', chinese: '嘴巴' },
-                    { emoji: '👂', english: 'ear', chinese: '耳朵' },
-                    { emoji: '🤚', english: 'hand', chinese: '手' },
-                    { emoji: '🦶', english: 'foot', chinese: '脚' },
-                    { emoji: '🦷', english: 'tooth', chinese: '牙齿' },
-                    { emoji: '🧠', english: 'brain', chinese: '大脑' },
-                    { emoji: '❤️', english: 'heart', chinese: '心脏' },
-                    { emoji: '💪', english: 'arm', chinese: '手臂' }
+                    { en: 'Head', zh: '头', emoji: '👤' },
+                    { en: 'Eye', zh: '眼睛', emoji: '👁️' },
+                    { en: 'Nose', zh: '鼻子', emoji: '👃' },
+                    { en: 'Ear', zh: '耳朵', emoji: '👂' },
+                    { en: 'Mouth', zh: '嘴巴', emoji: '👄' },
+                    { en: 'Hand', zh: '手', emoji: '✋' },
+                    { en: 'Foot', zh: '脚', emoji: '🦶' },
+                    { en: 'Arm', zh: '手臂', emoji: '💪' },
+                    { en: 'Leg', zh: '腿', emoji: '🦵' },
+                    { en: 'Face', zh: '脸', emoji: '😊' },
+                    { en: 'Hair', zh: '头发', emoji: '💇' },
+                    { en: 'Heart', zh: '心脏', emoji: '❤️' }
                 ]
             },
             life: {
                 name: '生活类',
                 icon: '🏠',
                 words: [
-                    { emoji: '🍽️', english: 'plate', chinese: '盘子' },
-                    { emoji: '🍴', english: 'fork', chinese: '叉子' },
-                    { emoji: '🥄', english: 'spoon', chinese: '勺子' },
-                    { emoji: '📱', english: 'phone', chinese: '手机' },
-                    { emoji: '📺', english: 'television', chinese: '电视' },
-                    { emoji: '💡', english: 'light', chinese: '灯' },
-                    { emoji: '🚪', english: 'door', chinese: '门' },
-                    { emoji: '🪟', english: 'window', chinese: '窗户' },
-                    { emoji: '🛏️', english: 'bed', chinese: '床' },
-                    { emoji: '🧼', english: 'soap', chinese: '肥皂' }
+                    { en: 'Bed', zh: '床', emoji: '🛏️' },
+                    { en: 'Table', zh: '桌子', emoji: '🪑' },
+                    { en: 'Chair', zh: '椅子', emoji: '🪑' },
+                    { en: 'Door', zh: '门', emoji: '🚪' },
+                    { en: 'Window', zh: '窗户', emoji: '🪟' },
+                    { en: 'Book', zh: '书', emoji: '📚' },
+                    { en: 'Clock', zh: '时钟', emoji: '⏰' },
+                    { en: 'Phone', zh: '手机', emoji: '📱' },
+                    { en: 'TV', zh: '电视', emoji: '📺' },
+                    { en: 'Lamp', zh: '台灯', emoji: '💡' },
+                    { en: 'Bowl', zh: '碗', emoji: '🍚' },
+                    { en: 'Spoon', zh: '勺子', emoji: '🥄' }
                 ]
             },
             greetings: {
                 name: '问候类',
                 icon: '👋',
                 words: [
-                    { emoji: '👋', english: 'hello', chinese: '你好' },
-                    { emoji: '🙋', english: 'hi', chinese: '嗨' },
-                    { emoji: '☀️', english: 'morning', chinese: '早上好' },
-                    { emoji: '🌙', english: 'night', chinese: '晚安' },
-                    { emoji: '🤝', english: 'thank', chinese: '谢谢' },
-                    { emoji: '🙏', english: 'please', chinese: '请' },
-                    { emoji: '👋', english: 'goodbye', chinese: '再见' },
-                    { emoji: '😊', english: 'happy', chinese: '开心' },
-                    { emoji: '😢', english: 'sad', chinese: '难过' },
-                    { emoji: '❤️', english: 'love', chinese: '爱' }
+                    { en: 'Hello', zh: '你好', emoji: '👋' },
+                    { en: 'Hi', zh: '嗨', emoji: '🙋' },
+                    { en: 'Bye', zh: '再见', emoji: '👋' },
+                    { en: 'Goodbye', zh: '再见', emoji: '👋' },
+                    { en: 'Thanks', zh: '谢谢', emoji: '🙏' },
+                    { en: 'Please', zh: '请', emoji: '🙏' },
+                    { en: 'Sorry', zh: '对不起', emoji: '😔' },
+                    { en: 'Good', zh: '好的', emoji: '👍' },
+                    { en: 'Yes', zh: '是', emoji: '✅' },
+                    { en: 'No', zh: '不', emoji: '❌' },
+                    { en: 'Morning', zh: '早安', emoji: '🌅' },
+                    { en: 'Night', zh: '晚安', emoji: '🌙' }
                 ]
             },
             transport: {
                 name: '交通类',
                 icon: '🚗',
                 words: [
-                    { emoji: '🚗', english: 'car', chinese: '汽车' },
-                    { emoji: '🚌', english: 'bus', chinese: '公交车' },
-                    { emoji: '🚄', english: 'train', chinese: '火车' },
-                    { emoji: '✈️', english: 'plane', chinese: '飞机' },
-                    { emoji: '🚲', english: 'bicycle', chinese: '自行车' },
-                    { emoji: '🚢', english: 'ship', chinese: '轮船' },
-                    { emoji: '🚕', english: 'taxi', chinese: '出租车' },
-                    { emoji: '🚁', english: 'helicopter', chinese: '直升机' },
-                    { emoji: '🚃', english: 'tram', chinese: '电车' },
-                    { emoji: '🚜', english: 'tractor', chinese: '拖拉机' }
+                    { en: 'Car', zh: '汽车', emoji: '🚗' },
+                    { en: 'Bus', zh: '公交车', emoji: '🚌' },
+                    { en: 'Taxi', zh: '出租车', emoji: '🚕' },
+                    { en: 'Train', zh: '火车', emoji: '🚂' },
+                    { en: 'Plane', zh: '飞机', emoji: '✈️' },
+                    { en: 'Ship', zh: '轮船', emoji: '🚢' },
+                    { en: 'Bike', zh: '自行车', emoji: '🚲' },
+                    { en: 'Motorcycle', zh: '摩托车', emoji: '🏍️' },
+                    { en: 'Subway', zh: '地铁', emoji: '🚇' },
+                    { en: 'Boat', zh: '小船', emoji: '⛵' },
+                    { en: 'Truck', zh: '卡车', emoji: '🚚' },
+                    { en: 'Ambulance', zh: '救护车', emoji: '🚑' }
                 ]
             },
             family: {
                 name: '称呼类',
                 icon: '👨‍👩‍👧',
                 words: [
-                    { emoji: '👨', english: 'father', chinese: '爸爸' },
-                    { emoji: '👩', english: 'mother', chinese: '妈妈' },
-                    { emoji: '👴', english: 'grandfather', chinese: '爷爷' },
-                    { emoji: '👵', english: 'grandmother', chinese: '奶奶' },
-                    { emoji: '👦', english: 'brother', chinese: '兄弟' },
-                    { emoji: '👧', english: 'sister', chinese: '姐妹' },
-                    { emoji: '🧔', english: 'uncle', chinese: '叔叔' },
-                    { emoji: '👩‍🦰', english: 'aunt', chinese: '阿姨' },
-                    { emoji: '👶', english: 'baby', chinese: '宝宝' },
-                    { emoji: '🧑', english: 'friend', chinese: '朋友' }
+                    { en: 'Dad', zh: '爸爸', emoji: '👨' },
+                    { en: 'Mom', zh: '妈妈', emoji: '👩' },
+                    { en: 'Grandpa', zh: '爷爷', emoji: '👴' },
+                    { en: 'Grandma', zh: '奶奶', emoji: '👵' },
+                    { en: 'Brother', zh: '兄弟', emoji: '👦' },
+                    { en: 'Sister', zh: '姐妹', emoji: '👧' },
+                    { en: 'Uncle', zh: '叔叔', emoji: '🧔' },
+                    { en: 'Aunt', zh: '阿姨', emoji: '👩‍🦰' },
+                    { en: 'Baby', zh: '宝宝', emoji: '👶' },
+                    { en: 'Teacher', zh: '老师', emoji: '👨‍🏫' },
+                    { en: 'Doctor', zh: '医生', emoji: '👨‍⚕️' },
+                    { en: 'Friend', zh: '朋友', emoji: '🧑‍🤝‍🧑' }
                 ]
             },
             food: {
                 name: '食物类',
                 icon: '🍔',
                 words: [
-                    { emoji: '🍔', english: 'hamburger', chinese: '汉堡' },
-                    { emoji: '🍕', english: 'pizza', chinese: '披萨' },
-                    { emoji: '🍜', english: 'noodles', chinese: '面条' },
-                    { emoji: '🍚', english: 'rice', chinese: '米饭' },
-                    { emoji: '🥚', english: 'egg', chinese: '鸡蛋' },
-                    { emoji: '🥛', english: 'milk', chinese: '牛奶' },
-                    { emoji: '🧀', english: 'cheese', chinese: '奶酪' },
-                    { emoji: '🍫', english: 'chocolate', chinese: '巧克力' },
-                    { emoji: '🍦', english: 'ice cream', chinese: '冰淇淋' },
-                    { emoji: '🥪', english: 'sandwich', chinese: '三明治' }
+                    { en: 'Bread', zh: '面包', emoji: '🍞' },
+                    { en: 'Milk', zh: '牛奶', emoji: '🥛' },
+                    { en: 'Egg', zh: '鸡蛋', emoji: '🥚' },
+                    { en: 'Rice', zh: '米饭', emoji: '🍚' },
+                    { en: 'Noodle', zh: '面条', emoji: '🍜' },
+                    { en: 'Pizza', zh: '披萨', emoji: '🍕' },
+                    { en: 'Hamburger', zh: '汉堡', emoji: '🍔' },
+                    { en: 'Chicken', zh: '鸡肉', emoji: '🍗' },
+                    { en: 'Fish', zh: '鱼肉', emoji: '🐟' },
+                    { en: 'Cake', zh: '蛋糕', emoji: '🎂' },
+                    { en: 'Ice Cream', zh: '冰淇淋', emoji: '🍦' },
+                    { en: 'Candy', zh: '糖果', emoji: '🍬' }
                 ]
             },
             nature: {
                 name: '自然类',
                 icon: '🌳',
                 words: [
-                    { emoji: '🌳', english: 'tree', chinese: '树' },
-                    { emoji: '🌸', english: 'flower', chinese: '花' },
-                    { emoji: '☀️', english: 'sun', chinese: '太阳' },
-                    { emoji: '🌙', english: 'moon', chinese: '月亮' },
-                    { emoji: '⭐', english: 'star', chinese: '星星' },
-                    { emoji: '☁️', english: 'cloud', chinese: '云' },
-                    { emoji: '🌈', english: 'rainbow', chinese: '彩虹' },
-                    { emoji: '🌊', english: 'ocean', chinese: '海洋' },
-                    { emoji: '🏔️', english: 'mountain', chinese: '山' },
-                    { emoji: '🌺', english: 'rose', chinese: '玫瑰' }
+                    { en: 'Sun', zh: '太阳', emoji: '☀️' },
+                    { en: 'Moon', zh: '月亮', emoji: '🌙' },
+                    { en: 'Star', zh: '星星', emoji: '⭐' },
+                    { en: 'Cloud', zh: '云', emoji: '☁️' },
+                    { en: 'Rain', zh: '雨', emoji: '🌧️' },
+                    { en: 'Snow', zh: '雪', emoji: '❄️' },
+                    { en: 'Tree', zh: '树', emoji: '🌳' },
+                    { en: 'Flower', zh: '花', emoji: '🌸' },
+                    { en: 'Grass', zh: '草', emoji: '🌿' },
+                    { en: 'River', zh: '河', emoji: '🏞️' },
+                    { en: 'Mountain', zh: '山', emoji: '⛰️' },
+                    { en: 'Ocean', zh: '海洋', emoji: '🌊' }
                 ]
             }
         };
 
-        // 游戏状态
-        let gameState = {
-            score: 0,
-            combo: 0,
-            lives: 3,
-            selectedCategory: 'fruits',
-            isPlaying: false,
-            canvas: null,
-            ctx: null,
-            cart: null,
-            fallingItems: [],
-            animationId: null,
-            lastSpawnTime: 0,
-            spawnInterval: 2000
-        };
+        // ==================== 全局状态 ====================
+        let currentMode = null;
+        let currentCategory = null;
+        let currentWords = [];
+        let currentWordIndex = 0;
+        let gameRunning = false;
+        let gameLoop = null;
+        let fallingItems = [];
+        let cartX = 0;
+        let score = 0;
+        let combo = 0;
+        let maxCombo = 0;
+        let learningProgress = {};
+        let recognition = null;
+        let isRecording = false;
+        let examTimer = null;
+        let examSeconds = 5;
+        let speechSynthReady = false;
 
-        // 学习状态
-        let learnState = {
-            category: 'fruits',
-            currentIndex: 0,
-            words: []
-        };
-
-        // 考试状态
-        let examState = {
-            category: 'fruits',
-            words: [],
-            currentIndex: 0,
-            correctCount: 0,
-            isRecording: false,
-            recognition: null,
-            timerInterval: null
-        };
-
-        // 学习进度存储
-        let progressData = {
-            learned: [],
-            learning: [],
-            highScore: 0
-        };
-
-        // 初始化
-        function init() {
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
             loadProgress();
-            renderCategoryGrids();
-            initGameCanvas();
-            initSpeechRecognition();
-        }
+            setupControls();
+            checkSpeechSupport();
+        });
 
-        // 页面切换
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-        }
+        const PROGRESS_VERSION = 2;
 
-        // 渲染情景选择网格
-        function renderCategoryGrids() {
-            const grids = ['gameCategoryGrid', 'learnCategoryGrid', 'examCategoryGrid'];
-            grids.forEach(gridId => {
-                const grid = document.getElementById(gridId);
-                grid.innerHTML = '';
-                Object.keys(wordDatabase).forEach(key => {
-                    const category = wordDatabase[key];
-                    const card = document.createElement('div');
-                    card.className = 'category-card';
-                    card.dataset.category = key;
-                    card.innerHTML = `
-                        <div class="category-icon">${category.icon}</div>
-                        <div class="category-name">${category.name}</div>
-                        <div class="category-count">${category.words.length} 个单词</div>
-                    `;
-                    card.onclick = () => selectCategory(key, gridId);
-                    grid.appendChild(card);
-                });
-            });
-        }
-
-        // 选择情景
-        function selectCategory(category, gridId) {
-            gameState.selectedCategory = category;
-            
-            document.querySelectorAll('#' + gridId + ' .category-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            event.currentTarget.classList.add('selected');
-            
-            if (gridId === 'learnCategoryGrid') {
-                startLearnMode(category);
-            } else if (gridId === 'examCategoryGrid') {
-                startExamMode(category);
+        function loadProgress() {
+            try {
+                const savedVersion = localStorage.getItem('progressVersion');
+                const saved = localStorage.getItem('englishLearningProgress');
+                
+                if (saved && savedVersion === String(PROGRESS_VERSION)) {
+                    learningProgress = JSON.parse(saved);
+                } else {
+                    console.log('重置学习进度（版本更新或首次使用）');
+                    learningProgress = {};
+                    localStorage.setItem('progressVersion', PROGRESS_VERSION);
+                    saveProgress();
+                }
+            } catch (e) {
+                learningProgress = {};
             }
         }
 
-        // 语音合成
-        function speak(text, lang = 'en-US') {
+        function saveProgress() {
+            try {
+                localStorage.setItem('englishLearningProgress', JSON.stringify(learningProgress));
+            } catch (e) {
+                console.error('保存进度失败:', e);
+            }
+        }
+
+        function checkSpeechSupport() {
+            if ('speechSynthesis' in window) {
+                speechSynthReady = true;
+                speechSynthesis.onvoiceschanged = () => {
+                    speechSynthReady = true;
+                };
+            } else {
+                console.warn('浏览器不支持语音合成');
+            }
+
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 3;
+
+                recognition.onresult = (event) => {
+                    console.log('=== 识别结果 ===');
+                    for (let i = 0; i < event.results.length; i++) {
+                        for (let j = 0; j < event.results[i].length; j++) {
+                            console.log(`候选 ${j+1}:`, event.results[i][j].transcript, 
+                                       '(置信度:', event.results[i][j].confidence.toFixed(2) + ')');
+                        }
+                    }
+                    
+                    const transcript = event.results[0][0].transcript.toLowerCase().trim();
+                    console.log('使用的识别文字:', transcript);
+                    checkAnswer(transcript);
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('❌ 语音识别错误:', event.error);
+                    let errorMsg = '识别失败';
+                    
+                    switch(event.error) {
+                        case 'not-allowed':
+                            errorMsg = '❌ 麦克风权限被拒绝，请在浏览器设置中允许';
+                            break;
+                        case 'no-speech':
+                            errorMsg = '没有听到声音，请大声一点';
+                            break;
+                        case 'audio-capture':
+                            errorMsg = '无法访问麦克风';
+                            break;
+                        case 'network':
+                            errorMsg = '网络错误，语音识别需要联网';
+                            break;
+                        case 'aborted':
+                            errorMsg = '录音已中止';
+                            break;
+                        default:
+                            errorMsg = '识别错误: ' + event.error;
+                    }
+                    
+                    stopRecording();
+                    showResult(false, errorMsg);
+                };
+
+                recognition.onend = () => {
+                    console.log('录音结束');
+                    stopRecording();
+                };
+
+                recognition.onstart = () => {
+                    console.log('✅ 录音已开始，请说话...');
+                };
+                
+                console.log('✅ 语音识别已初始化');
+            } else {
+                console.warn('❌ 浏览器不支持语音识别，请使用 Chrome/Edge 浏览器');
+            }
+        }
+
+        // ==================== 导航控制 ====================
+        function hideAllScreens() {
+            document.getElementById('menuScreen').classList.add('hidden');
+            document.getElementById('categoryScreen').classList.remove('active');
+            document.getElementById('gameScreen').classList.remove('active');
+            document.getElementById('learnScreen').classList.remove('active');
+            document.getElementById('examScreen').classList.remove('active');
+            document.getElementById('progressScreen').classList.remove('active');
+        }
+
+        function showCategorySelect(mode) {
+            currentMode = mode;
+            hideAllScreens();
+            document.getElementById('categoryScreen').classList.add('active');
+            document.getElementById('categoryTitle').textContent = mode === 'game' ? '选择游戏情景' : 
+                                                               mode === 'learn' ? '选择学习类别' : '选择考试类别';
+            
+            renderCategoryGrid();
+            
+            const startBtn = document.getElementById('startGameBtn');
+            if (mode === 'game') {
+                startBtn.classList.add('hidden');
+            }
+        }
+
+        function renderCategoryGrid() {
+            const grid = document.getElementById('categoryGrid');
+            grid.innerHTML = '';
+
+            Object.keys(wordDatabase).forEach(key => {
+                const category = wordDatabase[key];
+                const progress = getCategoryProgress(key);
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.onclick = () => selectCategory(key);
+                card.innerHTML = `
+                    <div class="category-icon">${category.icon}</div>
+                    <div class="category-name">${category.name}</div>
+                    <div class="category-count">${category.words.length}个单词</div>
+                    ${progress.total > 0 ? `<div class="category-count" style="color: #43e97b;">已学会 ${progress.learned}/${progress.total}</div>` : ''}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectCategory(categoryKey) {
+            currentCategory = categoryKey;
+            currentWords = [...wordDatabase[categoryKey].words];
+            
+            if (currentMode === 'game') {
+                document.getElementById('startGameBtn').classList.remove('hidden');
+            } else if (currentMode === 'learn') {
+                startLearn();
+            } else if (currentMode === 'exam') {
+                startExam();
+            }
+        }
+
+        function backToMenu() {
+            stopGame();
+            hideAllScreens();
+            document.getElementById('menuScreen').classList.remove('hidden');
+        }
+
+        function backToCategory() {
+            stopGame();
+            stopExam();
+            hideAllScreens();
+            showCategorySelect(currentMode);
+        }
+
+        // ==================== 游戏模式 ====================
+        function startGame() {
+            if (currentWords.length === 0) return;
+            
+            hideAllScreens();
+            document.getElementById('gameScreen').classList.add('active');
+            
+            score = 0;
+            combo = 0;
+            maxCombo = 0;
+            fallingItems = [];
+            updateScoreDisplay();
+            updateComboDisplay();
+            
+            const canvas = document.getElementById('gameCanvas');
+            cartX = canvas.offsetWidth / 2 - 50;
+            const cart = document.getElementById('cart');
+            cart.style.left = cartX + 'px';
+            
+            const tip = document.getElementById('gameTip');
+            tip.textContent = '准备好了吗？点击开始！';
+            tip.classList.add('active');
+            
+            setTimeout(() => {
+                tip.classList.remove('active');
+                gameRunning = true;
+                startGameLoop();
+            }, 1500);
+        }
+
+        function startGameLoop() {
+            let lastSpawnTime = 0;
+            let lastFrameTime = performance.now();
+            
+            function loop(currentTime) {
+                if (!gameRunning) return;
+                
+                const deltaTime = (currentTime - lastFrameTime) / 1000;
+                lastFrameTime = currentTime;
+                
+                if (currentTime - lastSpawnTime > 2000) {
+                    spawnFallingItem();
+                    lastSpawnTime = currentTime;
+                }
+                
+                updateFallingItems(deltaTime);
+                checkCollisions();
+                gameLoop = requestAnimationFrame(loop);
+            }
+            
+            gameLoop = requestAnimationFrame(loop);
+        }
+
+        function spawnFallingItem() {
+            const canvas = document.getElementById('gameCanvas');
+            const word = currentWords[Math.floor(Math.random() * currentWords.length)];
+            
+            const item = document.createElement('div');
+            item.className = 'falling-item';
+            item.style.left = (Math.random() * (canvas.offsetWidth - 70)) + 'px';
+            item.style.top = '-70px';
+            item.innerHTML = `
+                <div class="falling-emoji">${word.emoji}</div>
+                <div class="falling-word">${word.en}</div>
+            `;
+            
+            canvas.appendChild(item);
+            
+            fallingItems.push({
+                element: item,
+                word: word,
+                x: parseFloat(item.style.left),
+                y: -70,
+                speed: 100 + Math.random() * 50
+            });
+        }
+
+        function updateFallingItems(deltaTime) {
+            const canvas = document.getElementById('gameCanvas');
+            
+            fallingItems = fallingItems.filter(item => {
+                item.y += item.speed * deltaTime;
+                item.element.style.top = item.y + 'px';
+                
+                if (item.y > canvas.offsetHeight) {
+                    item.element.remove();
+                    combo = 0;
+                    updateComboDisplay();
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        function checkCollisions() {
+            const canvas = document.getElementById('gameCanvas');
+            const cartTop = canvas.offsetHeight - 100;
+            const cartLeft = cartX;
+            const cartRight = cartX + 100;
+            
+            fallingItems = fallingItems.filter(item => {
+                if (item.y + 70 >= cartTop && item.y <= cartTop + 80) {
+                    if (item.x + 70 >= cartLeft && item.x <= cartRight) {
+                        catchItem(item);
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
+
+        function catchItem(item) {
+            addScore();
+            showCatchEffect(item);
+            speakWord(item.word, 2);
+            item.element.remove();
+        }
+
+        function addScore() {
+            combo++;
+            if (combo > maxCombo) maxCombo = combo;
+            
+            let points = 1;
+            if (combo >= 10) points = 10;
+            else if (combo >= 3) points = 3;
+            
+            score += points;
+            updateScoreDisplay();
+            updateComboDisplay();
+            
+            if (combo >= 3) {
+                showComboEffect();
+            }
+        }
+
+        function showCatchEffect(item) {
+            const canvas = document.getElementById('gameCanvas');
+            const effect = document.createElement('div');
+            effect.className = 'catch-effect';
+            effect.textContent = '+' + (combo >= 10 ? 10 : combo >= 3 ? 3 : 1);
+            effect.style.left = item.x + 'px';
+            effect.style.top = item.y + 'px';
+            canvas.appendChild(effect);
+            
+            setTimeout(() => effect.remove(), 500);
+        }
+
+        function showComboEffect() {
+            const canvas = document.getElementById('gameCanvas');
+            const effect = document.createElement('div');
+            effect.className = 'combo-effect';
+            effect.textContent = combo + ' 连击!';
+            effect.style.left = '50%';
+            effect.style.top = '40%';
+            effect.style.transform = 'translateX(-50%)';
+            canvas.appendChild(effect);
+            
+            setTimeout(() => effect.remove(), 1000);
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('score').textContent = score;
+        }
+
+        function updateComboDisplay() {
+            document.getElementById('combo').textContent = combo;
+        }
+
+        function setupControls() {
+            const leftBtn = document.getElementById('leftBtn');
+            const rightBtn = document.getElementById('rightBtn');
+            const canvas = document.getElementById('gameCanvas');
+            
+            let moveInterval = null;
+            let moveDirection = 0;
+            
+            function startMoving(direction) {
+                if (!gameRunning) return;
+                moveDirection = direction;
+                moveInterval = setInterval(() => {
+                    moveCart(moveDirection * 15);
+                }, 30);
+            }
+            
+            function stopMoving() {
+                moveDirection = 0;
+                if (moveInterval) {
+                    clearInterval(moveInterval);
+                    moveInterval = null;
+                }
+            }
+            
+            leftBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startMoving(-1);
+            });
+            leftBtn.addEventListener('touchend', stopMoving);
+            leftBtn.addEventListener('mousedown', () => startMoving(-1));
+            leftBtn.addEventListener('mouseup', stopMoving);
+            leftBtn.addEventListener('mouseleave', stopMoving);
+            
+            rightBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startMoving(1);
+            });
+            rightBtn.addEventListener('touchend', stopMoving);
+            rightBtn.addEventListener('mousedown', () => startMoving(1));
+            rightBtn.addEventListener('mouseup', stopMoving);
+            rightBtn.addEventListener('mouseleave', stopMoving);
+            
+            document.addEventListener('keydown', (e) => {
+                if (!gameRunning) return;
+                if (e.key === 'ArrowLeft') moveCart(-15);
+                if (e.key === 'ArrowRight') moveCart(15);
+            });
+            
+            let touchStartX = 0;
+            canvas.addEventListener('touchstart', (e) => {
+                if (!gameRunning) return;
+                touchStartX = e.touches[0].clientX;
+            });
+            
+            canvas.addEventListener('touchmove', (e) => {
+                if (!gameRunning) return;
+                e.preventDefault();
+                const touchX = e.touches[0].clientX;
+                const diff = touchX - touchStartX;
+                if (Math.abs(diff) > 10) {
+                    moveCart(diff * 0.5);
+                    touchStartX = touchX;
+                }
+            });
+        }
+
+        function moveCart(delta) {
+            const canvas = document.getElementById('gameCanvas');
+            const cart = document.getElementById('cart');
+            
+            cartX += delta;
+            cartX = Math.max(0, Math.min(canvas.offsetWidth - 100, cartX));
+            cart.style.left = cartX + 'px';
+        }
+
+        function stopGame() {
+            gameRunning = false;
+            if (gameLoop) {
+                cancelAnimationFrame(gameLoop);
+                gameLoop = null;
+            }
+            
+            fallingItems.forEach(item => item.element.remove());
+            fallingItems = [];
+            clearSpeechQueue();
+        }
+
+        function showGameOver() {
+            stopGame();
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('maxCombo').textContent = maxCombo;
+            document.getElementById('gameOverModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('gameOverModal').classList.remove('active');
+            backToMenu();
+        }
+
+        function restartGame() {
+            document.getElementById('gameOverModal').classList.remove('active');
+            startGame();
+        }
+
+        // ==================== 学习模式 ====================
+        function startLearn() {
+            if (currentWords.length === 0) return;
+            
+            currentWordIndex = 0;
+            shuffleArray(currentWords);
+            
+            hideAllScreens();
+            document.getElementById('learnScreen').classList.add('active');
+            
+            updateLearnCard();
+            updateLearnNavigation();
+            speakWord(currentWords[currentWordIndex], 1);
+        }
+
+        function updateLearnCard() {
+            const word = currentWords[currentWordIndex];
+            document.getElementById('learnEmoji').textContent = word.emoji;
+            document.getElementById('learnEn').textContent = word.en;
+            document.getElementById('learnZh').textContent = word.zh;
+            document.getElementById('cardIndicator').textContent = 
+                `${currentWordIndex + 1} / ${currentWords.length}`;
+        }
+
+        function updateLearnNavigation() {
+            document.getElementById('prevBtn').disabled = currentWordIndex === 0;
+            document.getElementById('nextBtn').disabled = currentWordIndex === currentWords.length - 1;
+        }
+
+        function prevWord() {
+            if (currentWordIndex > 0) {
+                currentWordIndex--;
+                updateLearnCard();
+                updateLearnNavigation();
+                speakWord(currentWords[currentWordIndex], 1);
+            }
+        }
+
+        function nextWord() {
+            if (currentWordIndex < currentWords.length - 1) {
+                currentWordIndex++;
+                updateLearnCard();
+                updateLearnNavigation();
+                speakWord(currentWords[currentWordIndex], 1);
+            }
+        }
+
+        function speakCurrentWord() {
+            speakWord(currentWords[currentWordIndex], 2);
+        }
+
+        // ==================== 考试模式 ====================
+        let examInProgress = false;
+
+        function startExam() {
+            if (currentWords.length === 0) return;
+            
+            if (!recognition) {
+                alert('❌ 您的浏览器不支持语音识别功能！\n\n请使用 Chrome 或 Edge 浏览器。\nSafari 在 iOS 14.5+ 也支持。');
+                return;
+            }
+            
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('❌ 无法访问麦克风！\n\n请确保：\n1. 使用 HTTPS 或 localhost\n2. 允许浏览器访问麦克风\n3. 设备已连接麦克风');
+                return;
+            }
+            
+            console.log('🎯 开始考试模式');
+            
+            currentWordIndex = 0;
+            shuffleArray(currentWords);
+            examInProgress = true;
+            
+            hideAllScreens();
+            document.getElementById('examScreen').classList.add('active');
+            
+            updateExamCard();
+            startExamTimer();
+        }
+
+        function updateExamCard() {
+            const word = currentWords[currentWordIndex];
+            document.getElementById('examEmoji').textContent = word.emoji;
+            document.getElementById('examStatus').textContent = '点击 🎤 开始录音';
+            document.getElementById('resultDisplay').textContent = '';
+            document.getElementById('resultDisplay').className = 'result-display';
+            document.getElementById('examIndicator').textContent = 
+                `${currentWordIndex + 1} / ${currentWords.length}`;
+            document.getElementById('recordBtn').disabled = false;
+            examSeconds = 5;
+            updateExamTimerDisplay();
+        }
+
+        function startExamTimer() {
+            clearInterval(examTimer);
+            examSeconds = 5;
+            updateExamTimerDisplay();
+            
+            examTimer = setInterval(() => {
+                examSeconds--;
+                updateExamTimerDisplay();
+                
+                if (examSeconds <= 0) {
+                    clearInterval(examTimer);
+                    timeUp();
+                }
+            }, 1000);
+        }
+
+        function updateExamTimerDisplay() {
+            document.getElementById('examTimer').textContent = examSeconds;
+        }
+
+        function timeUp() {
+            if (!examInProgress) return;
+            
+            document.getElementById('examStatus').textContent = '⏰ 时间到！';
+            document.getElementById('recordBtn').disabled = true;
+            showResult(false, `正确答案: ${currentWords[currentWordIndex].en}`);
+            
+            setTimeout(() => {
+                nextExamWord();
+            }, 2500);
+        }
+
+        function toggleRecording() {
+            if (isRecording) {
+                console.log('手动停止录音');
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        let recordTimeout = null;
+
+        function startRecording() {
+            if (!recognition || isRecording || !examInProgress) return;
+            
+            console.log('🎤 === 开始录音流程 ===');
+            clearInterval(examTimer);
+            
+            try {
+                isRecording = true;
+                document.getElementById('recordBtn').classList.add('recording');
+                document.getElementById('examStatus').textContent = '🎤 正在听你说...';
+                
+                recognition.start();
+                console.log('recognition.start() 已调用');
+                
+                recordTimeout = setTimeout(() => {
+                    console.log('录音超时（4秒），自动停止');
+                    if (isRecording) {
+                        try {
+                            recognition.stop();
+                        } catch (e) {}
+                    }
+                }, 4000);
+                
+            } catch (e) {
+                console.error('❌ 启动录音异常:', e);
+                isRecording = false;
+                document.getElementById('recordBtn').classList.remove('recording');
+                document.getElementById('examStatus').textContent = '启动失败，请重试';
+                
+                if (e.message && e.message.includes('not-allowed')) {
+                    alert('❌ 麦克风权限被拒绝！\n\n请点击浏览器地址栏左侧的 🔒 或 ⓘ 图标，\n找到"麦克风"权限，选择"允许"，然后刷新页面。');
+                }
+            }
+        }
+
+        function stopRecording() {
+            if (!isRecording) return;
+            
+            isRecording = false;
+            document.getElementById('recordBtn').classList.remove('recording');
+            
+            if (recordTimeout) {
+                clearTimeout(recordTimeout);
+                recordTimeout = null;
+            }
+            
+            try {
+                recognition.stop();
+                console.log('recognition.stop() 已调用');
+            } catch (e) {
+                console.log('停止录音时的异常（可能是正常的）:', e.message || e);
+            }
+        }
+
+        function checkAnswer(transcript) {
+            if (!examInProgress) return;
+            
+            const correctAnswer = currentWords[currentWordIndex].en.toLowerCase();
+            const userAnswer = transcript.toLowerCase().trim();
+            
+            console.log('\n📝 === 答案对比 ===');
+            console.log('用户回答:', '"' + userAnswer + '"');
+            console.log('正确答案:', '"' + correctAnswer + '"');
+            
+            const userWords = userAnswer.split(/\s+/).filter(w => w.length > 0);
+            const correctWords = correctAnswer.split(/\s+/).filter(w => w.length > 0);
+            
+            console.log('用户分词:', userWords);
+            console.log('正确分词:', correctWords);
+            
+            let isCorrect = false;
+            
+            if (userWords.length === 1 && correctWords.length === 1) {
+                isCorrect = userWords[0] === correctWords[0] ||
+                           similarity(userWords[0], correctWords[0]) > 0.65;
+            } else {
+                let matchCount = 0;
+                correctWords.forEach(cw => {
+                    if (userWords.some(uw => 
+                        uw === cw || similarity(uw, cw) > 0.65
+                    )) {
+                        matchCount++;
+                    }
+                });
+                isCorrect = matchCount === correctWords.length;
+            }
+            
+            console.log('✅ 判断结果:', isCorrect ? '正确 ✅' : '错误 ❌');
+            
+            if (isCorrect) {
+                showResult(true, '太棒了！✅');
+                markWordLearned(currentWords[currentWordIndex].en);
+            } else {
+                showResult(false, `正确答案: ${currentWords[currentWordIndex].en}`);
+            }
+            
+            speakWord(currentWords[currentWordIndex], 1);
+            
+            setTimeout(() => {
+                nextExamWord();
+            }, 2500);
+        }
+
+        function similarity(s1, s2) {
+            if (!s1 || !s2) return 0;
+            if (s1 === s2) return 1;
+            
+            const longer = s1.length > s2.length ? s1 : s2;
+            const shorter = s1.length > s2.length ? s2 : s1;
+            
+            const costs = [];
+            for (let i = 0; i <= shorter.length; i++) {
+                let lastValue = i;
+                for (let j = 0; j <= longer.length; j++) {
+                    if (i === 0) {
+                        costs[j] = j;
+                    } else if (j > 0) {
+                        let newValue = costs[j - 1];
+                        if (shorter.charAt(i - 1) !== longer.charAt(j - 1)) {
+                            newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                        }
+                        costs[j - 1] = lastValue;
+                        lastValue = newValue;
+                    }
+                }
+                if (i > 0) costs[longer.length] = lastValue;
+            }
+            
+            const sim = (longer.length - costs[longer.length]) / parseFloat(longer.length);
+            console.log(`  相似度: "${s1}" vs "${s2}" = ${sim.toFixed(2)}`);
+            return sim;
+        }
+
+        function showResult(correct, message) {
+            const result = document.getElementById('resultDisplay');
+            result.textContent = message;
+            result.className = 'result-display ' + (correct ? 'correct' : 'wrong');
+            document.getElementById('recordBtn').disabled = true;
+            
+            if (correct) {
+                document.getElementById('examStatus').textContent = '🎉 回答正确！';
+            } else {
+                document.getElementById('examStatus').textContent = '😊 再试试看！';
+            }
+        }
+
+        function nextExamWord() {
+            if (!examInProgress) return;
+            
+            clearInterval(examTimer);
+            
+            if (currentWordIndex < currentWords.length - 1) {
+                currentWordIndex++;
+                updateExamCard();
+                startExamTimer();
+            } else {
+                examInProgress = false;
+                alert('🎉 考试完成！继续加油！');
+                backToCategory();
+            }
+        }
+
+        function stopExam() {
+            examInProgress = false;
+            clearInterval(examTimer);
+            stopRecording();
+            clearSpeechQueue();
+        }
+
+        // ==================== 语音合成 ====================
+        function speakDirect(word, lang) {
             return new Promise((resolve) => {
-                if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = lang;
-                    utterance.rate = 0.8;
-                    utterance.pitch = 1.2;
-                    utterance.onend = resolve;
-                    speechSynthesis.speak(utterance);
-                } else {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = lang;
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                utterance.volume = 1;
+                utterance.onend = () => {
                     resolve();
+                };
+                utterance.onerror = (e) => {
+                    console.error('发音错误:', e);
+                    resolve();
+                };
+                try {
+                    speechSynthesis.speak(utterance);
+                } catch (e) {
+                    console.error('发音异常:', e);
+                    resolve();
+                }
+            });
+        }
+
+        async function speakWord(word, times = 1) {
+            if (!('speechSynthesis' in window)) {
+                console.warn('浏览器不支持语音合成');
+                return;
+            }
+            
+            try {
+                speechSynthesis.cancel();
+                
+                for (let i = 0; i < times; i++) {
+                    await speakDirect(word.en, 'en-US');
+                    await new Promise(r => setTimeout(r, 200));
+                    await speakDirect(word.zh, 'zh-CN');
+                    if (i < times - 1) {
+                        await new Promise(r => setTimeout(r, 400));
+                    }
+                }
+            } catch (e) {
+                console.error('发音失败:', e);
+            }
+        }
+
+        function clearSpeechQueue() {
+            try {
+                speechSynthesis.cancel();
+            } catch (e) {}
+        }
+
+        // ==================== 学习进度 ====================
+        function markWordLearned(wordEn) {
+            if (!learningProgress[currentCategory]) {
+                learningProgress[currentCategory] = {};
+            }
+            
+            if (!learningProgress[currentCategory][wordEn]) {
+                learningProgress[currentCategory][wordEn] = 0;
+            }
+            
+            learningProgress[currentCategory][wordEn]++;
+            saveProgress();
+        }
+
+        function getCategoryProgress(categoryKey) {
+            const words = wordDatabase[categoryKey]?.words || [];
+            const progress = learningProgress[categoryKey] || {};
+            
+            let learned = 0;
+            let learning = 0;
+            
+            words.forEach(word => {
+                const count = progress[word.en] || 0;
+                if (count >= 3) learned++;
+                else if (count > 0) learning++;
+            });
+            
+            return {
+                total: words.length,
+                learned,
+                learning,
+                notLearned: words.length - learned - learning
+            };
+        }
+
+        function showProgress() {
+            hideAllScreens();
+            document.getElementById('progressScreen').classList.add('active');
+            renderProgress();
+        }
+
+        function renderProgress() {
+            const container = document.getElementById('progressContainer');
+            
+            let totalWords = 0;
+            let totalLearned = 0;
+            let totalLearning = 0;
+            
+            Object.keys(wordDatabase).forEach(key => {
+                const progress = getCategoryProgress(key);
+                totalWords += progress.total;
+                totalLearned += progress.learned;
+                totalLearning += progress.learning;
+            });
+            
+            const percent = totalWords > 0 ? Math.round((totalLearned / totalWords) * 100) : 0;
+            
+            let html = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${totalWords}</div>
+                        <div class="stat-label">总单词数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${totalLearned}</div>
+                        <div class="stat-label">考试通过</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${totalLearning}</div>
+                        <div class="stat-label">正在学习</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${percent}%</div>
+                        <div class="stat-label">完成度</div>
+                    </div>
+                </div>
+                
+                <div class="progress-card">
+                    <div class="progress-title">总体进度（考试通过才算掌握）</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${percent}%;"></div>
+                    </div>
+                    <div class="progress-numbers">${totalLearned} / ${totalWords} 个单词考试通过</div>
+                </div>
+            `;
+            
+            Object.keys(wordDatabase).forEach(key => {
+                const category = wordDatabase[key];
+                const progress = getCategoryProgress(key);
+                const percent = progress.total > 0 ? Math.round((progress.learned / progress.total) * 100) : 0;
+                
+                const learnedWords = category.words.filter(w => (learningProgress[key]?.[w.en] || 0) >= 3);
+                const learningWords = category.words.filter(w => {
+                    const count = learningProgress[key]?.[w.en] || 0;
+                    return count > 0 && count < 3;
+                });
+                
+                html += `
+                    <div class="progress-card">
+                        <div class="progress-title">${category.icon} ${category.name}</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percent}%;"></div>
+                        </div>
+                        <div class="progress-numbers">考试通过 ${progress.learned}/${progress.total}</div>
+                        ${learnedWords.length > 0 ? `
+                            <div style="margin-top: 10px; font-size: 0.9em; color: #43e97b;">✅ 考试通过 (≥3次):</div>
+                            <div class="word-list">
+                                ${learnedWords.map(w => `<span class="word-tag learned">${w.en} ${w.emoji}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                        ${learningWords.length > 0 ? `
+                            <div style="margin-top: 10px; font-size: 0.9em; color: #856404;">📖 考试答对过 (<3次):</div>
+                            <div class="word-list">
+                                ${learningWords.map(w => `<span class="word-tag learning">${w.en} ${w.emoji}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // ==================== 工具函数 ====================
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 60秒后游戏自动结束
+        setInterval(() => {
+            if (gameRunning && score > 0) {
+            }
+        }, 1000);
+
+        // 120秒后自动结束游戏（可手动提前结束）
+        let gameTime = 0;
+        setInterval(() => {
+            if (gameRunning) {
+                gameTime++;
+                if (gameTime >= 120) {
+                    gameTime = 0;
+                    showGameOver();
+                }
+            } else {
+                gameTime = 0;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
