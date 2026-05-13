@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>趣味英语乐园</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container { max-width: 500px; margin: 0 auto; min-height: 100vh; }
+        
+        /* 主菜单 */
+        #mainMenu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        h1 {
+            color: #fff;
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: bounce 2s infinite;
+        }
+        .subtitle {
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .menu-btn {
+            width: 280px;
+            padding: 18px;
+            margin: 12px;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .menu-btn:hover { transform: scale(1.05); }
+        .menu-btn:active { transform: scale(0.95); }
+        .btn-game { background: linear-gradient(45deg, #FF6B6B, #FF8E53); }
+        .btn-learn { background: linear-gradient(45deg, #4ECDC4, #44A08D); }
+        .btn-exam { background: linear-gradient(45deg, #A8EDEA, #667eea); }
+        .btn-progress { background: linear-gradient(45deg, #f093fb, #f5576c); }
+        
+        /* 通用页面样式 */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .page.active { display: block; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .page-title {
+            color: #fff;
+            font-size: 24px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        /* 情景选择 */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .category-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .category-card:hover { transform: translateY(-5px); }
+        .category-card.selected {
+            background: #FFD700;
+            transform: scale(1.02);
+        }
+        .category-icon { font-size: 40px; margin-bottom: 10px; }
+        .category-name { font-size: 18px; font-weight: bold; color: #333; }
+        .category-count { font-size: 12px; color: #666; margin-top: 5px; }
+        
+        .start-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        /* 游戏画布 */
+        #gameCanvas {
+            width: 100%;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 70%, #8FBC8F 70%, #228B22 100%);
+            border-radius: 15px;
+            display: block;
+            touch-action: none;
+        }
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        /* 学习模式 */
+        .word-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        .word-emoji { font-size: 80px; margin-bottom: 20px; }
+        .word-english { font-size: 36px; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .word-chinese { font-size: 24px; color: #666; margin-bottom: 20px; }
+        .speak-btn {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            border: none;
+            color: #fff;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .nav-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .nav-btn.prev { background: #e0e0e0; color: #333; }
+        .nav-btn.next { background: linear-gradient(45deg, #667eea, #764ba2); color: #fff; }
+        
+        /* 考试模式 */
+        .exam-container { text-align: center; }
+        .exam-emoji { font-size: 100px; margin: 30px 0; animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .exam-hint {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .timer {
+            font-size: 48px;
+            color: #FFD700;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .record-btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .record-btn.idle { background: #FF6B6B; color: #fff; }
+        .record-btn.listening { background: #4ECDC4; color: #fff; animation: pulse 0.5s infinite; }
+        
+        /* 进度页面 */
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-number { font-size: 36px; font-weight: bold; }
+        .stat-number.learned { color: #44A08D; }
+        .stat-number.learning { color: #FF8E53; }
+        .stat-label { font-size: 14px; color: #666; margin-top: 5px; }
+        
+        .word-list {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .word-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .word-item:last-child { border-bottom: none; }
+        .word-info { display: flex; align-items: center; }
+        .word-item-emoji { font-size: 30px; margin-right: 15px; }
+        .word-text { font-size: 16px; font-weight: bold; color: #333; }
+        .word-status {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-learned { background: #D4EDDA; color: #155724; }
+        .status-learning { background: #FFF3CD; color: #856404; }
+        
+        /* 结果弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 80%;
+            animation: popIn 0.3s ease;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-title { font-size: 28px; font-weight: bold; margin-bottom: 20px; }
+        .modal-score { font-size: 48px; font-weight: bold; color: #FF6B6B; margin-bottom: 10px; }
+        .modal-subtitle { font-size: 16px; color: #666; margin-bottom: 20px; }
+        .modal-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .modal-btn.primary { background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: #fff; }
+        .modal-btn.secondary { background: #e0e0e0; color: #333; }
+        
+        /* 组合效果 */
+        .combo-effect {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: comboAnim 0.8s ease-out forwards;
+            z-index: 999;
+            pointer-events: none;
+        }
+        @keyframes comboAnim {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+            100% { transform: translate(-50%, -60%) scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 主菜单 -->
+        <div id="mainMenu" class="page active">
+            <h1>🎉 趣味英语乐园</h1>
+            <p class="subtitle">边玩边学，快乐成长！</p>
+            <button class="menu-btn btn-game" onclick="showPage('gameCategory')">🎮 趣味游戏</button>
+            <button class="menu-btn btn-learn" onclick="showPage('learnCategory')">📚 学习单词</button>
+            <button class="menu-btn btn-exam" onclick="showPage('examCategory')">🎤 口语考试</button>
+            <button class="menu-btn btn-progress" onclick="showProgressPage()">📊 学习进度</button>
+        </div>
+        
+        <!-- 游戏情景选择 -->
+        <div id="gameCategory" class="page">
+            <div class="header">
+                <button class="back-btn" onclick="showPage('mainMenu')">← 返回</button>
+                <h2 class="page-title">选择情景</h2>
+                <div style="width: 60px;"></div>
+            </div>
+            <div class="category-grid" id="gameCategoryGrid"></div>
+            <button class="start-btn" onclick="startGame()">🚀 开始游戏</button>
+        </div>
+        
+        <!-- 游戏页面 -->
+        <div id="gamePage" class="page">
+            <div class="header">
+                <button class="back-btn" onclick="endGame()">← 结束</button>
+                <h2 class="page-title" id="currentGameCategory">游戏中</h2>
+                <div style="width: 60px;"></div>
+            </div>
+            <div class="game-info">
+                <span>得分: <span id="gameScore">0</span></span>
+                <span>连击: <span id="gameCombo">0</span></span>
+                <span>生命: <span id="gameLives">❤️❤️❤️</span></span>
+            </div>
+            <canvas id="gameCanvas"></canvas>
+        </div>
+        
+        <!-- 学习情景选择 -->
+        <div id="learnCategory" class="page">
+            <div class="header">
+                <button class="back-btn" onclick="showPage('mainMenu')">← 返回</button>
+                <h2 class="page-title">选择类别</h2>
+                <div style="width: 60px;"></div>
+            </div>
+            <div class="category-grid" id="learnCategoryGrid"></div>
+        </div>
+        
+        <!-- 学习页面 -->
+        <div id="learnPage" class="page">
+            <div class="header">
+                <button class="back-btn" onclick="showPage('learnCategory')">← 返回</button>
+                <h2 class="page-title" id="learnCategoryTitle">学习</h2>
+                <span id="learnProgress" style="color: #fff; font-size: 14px;">1/10</span>
+            </div>
+            <div class="word-card">
+                <div class="word-emoji" id="learnEmoji">🍎</div>
+                <div class="word-english" id="learnEnglish">apple</div>
+                <div class="word-chinese" id="learnChinese">苹果</div>
+                <button class="speak-btn" onclick="speakCurrentWord()">🔊 听发音</button>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev" onclick="prevWord()">⬅️ 上一个</button>
+                <button class="nav-btn next" onclick="nextWord()">下一个 ➡️</button>
+            </div>
+        </div>
+        
+        <!-- 考试情景选择 -->
+        <div id="examCategory" class="page">
+            <div class="header">
+                <button class="back-btn" onclick="showPage('mainMenu')">← 返回</button>
+                <h2 class="page-title">选择考试类别</h2>
+                <div style="width: 60px;"></div>
+            </div>
+            <div class="category-grid" id="examCategoryGrid"></div>
+        </div>
+        
+        <!-- 考试页面 -->
+        <div id="examPage" class="page">
+            <div class="header">
+                <button class="back-btn" onclick="endExam()">← 退出</button>
+                <h2 class="page-title" id="examCategoryTitle">考试</h2>
+                <span id="examProgress" style="color: #fff; font-size: 14px;">1/10</span>
+            </div>
+            <div class="exam-container">
+                <div class="exam-emoji" id="examEmoji">🍎</div>
+                <p class="exam-hint" id="examHint">请读出这个单词！</p>
+                <div class="timer" id="examTimer">5</div>
+                <button class="record-btn idle" id="recordBtn" onclick="toggleRecording()">
+                    🎤 录音
+                </button>
+                <p style="color: #fff; margin-top: 20px; font-size: 14px;">点击按钮开始录音</p>
+            </div>
+        </div>
+        
+        <!-- 进度页面 -->
+        <div id="progressPage" class="page">
+            <div class="header">
+                <button class="back-btn" onclick="showPage('mainMenu')">← 返回</button>
+                <h2 class="page-title">学习进度</h2>
+                <div style="width: 60px;"></div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat-card">
+                    <div class="stat-number learned" id="totalLearned">0</div>
+                    <div class="stat-label">已掌握单词</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number learning" id="totalLearning">0</div>
+                    <div class="stat-label">学习中</div>
+                </div>
+            </div>
+            <div class="word-list" id="progressWordList"></div>
+        </div>
+        
+        <!-- 游戏结束弹窗 -->
+        <div id="gameOverModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-title">🎉 游戏结束</div>
+                <div class="modal-score" id="finalScore">0</div>
+                <div class="modal-subtitle">最高分: <span id="highScore">0</span></div>
+                <button class="modal-btn primary" onclick="restartGame()">再玩一次</button>
+                <button class="modal-btn secondary" onclick="backToMenu()">返回菜单</button>
+            </div>
+        </div>
+        
+        <!-- 考试结果弹窗 -->
+        <div id="examResultModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-title" id="examResultTitle">太棒了！</div>
+                <div class="modal-score" id="examResultScore">8/10</div>
+                <div class="modal-subtitle" id="examResultSubtitle">继续加油！</div>
+                <button class="modal-btn primary" onclick="restartExam()">再考一次</button>
+                <button class="modal-btn secondary" onclick="backToMenu()">返回菜单</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 单词数据库
+        const wordDatabase = {
+            fruits: {
+                name: '水果类',
+                icon: '🍎',
+                words: [
+                    { emoji: '🍎', english: 'apple', chinese: '苹果' },
+                    { emoji: '🍌', english: 'banana', chinese: '香蕉' },
+                    { emoji: '🍊', english: 'orange', chinese: '橙子' },
+                    { emoji: '🍇', english: 'grape', chinese: '葡萄' },
+                    { emoji: '🍓', english: 'strawberry', chinese: '草莓' },
+                    { emoji: '🍉', english: 'watermelon', chinese: '西瓜' },
+                    { emoji: '🍑', english: 'peach', chinese: '桃子' },
+                    { emoji: '🍒', english: 'cherry', chinese: '樱桃' },
+                    { emoji: '🥝', english: 'kiwi', chinese: '猕猴桃' },
+                    { emoji: '🍋', english: 'lemon', chinese: '柠檬' }
+                ]
+            },
+            animals: {
+                name: '动物类',
+                icon: '🐶',
+                words: [
+                    { emoji: '🐶', english: 'dog', chinese: '狗' },
+                    { emoji: '🐱', english: 'cat', chinese: '猫' },
+                    { emoji: '🐦', english: 'bird', chinese: '鸟' },
+                    { emoji: '🐰', english: 'rabbit', chinese: '兔子' },
+                    { emoji: '🐘', english: 'elephant', chinese: '大象' },
+                    { emoji: '🦊', english: 'fox', chinese: '狐狸' },
+                    { emoji: '🐼', english: 'panda', chinese: '熊猫' },
+                    { emoji: '🦁', english: 'lion', chinese: '狮子' },
+                    { emoji: '🐯', english: 'tiger', chinese: '老虎' },
+                    { emoji: '🐸', english: 'frog', chinese: '青蛙' }
+                ]
+            },
+            clothes: {
+                name: '衣服类',
+                icon: '👕',
+                words: [
+                    { emoji: '👕', english: 'shirt', chinese: '衬衫' },
+                    { emoji: '👖', english: 'pants', chinese: '裤子' },
+                    { emoji: '👗', english: 'dress', chinese: '连衣裙' },
+                    { emoji: '🧥', english: 'coat', chinese: '外套' },
+                    { emoji: '👟', english: 'shoes', chinese: '鞋子' },
+                    { emoji: '🧢', english: 'hat', chinese: '帽子' },
+                    { emoji: '🧦', english: 'socks', chinese: '袜子' },
+                    { emoji: '👜', english: 'bag', chinese: '包包' },
+                    { emoji: '🧣', english: 'scarf', chinese: '围巾' },
+                    { emoji: '👓', english: 'glasses', chinese: '眼镜' }
+                ]
+            },
+            body: {
+                name: '人体类',
+                icon: '👤',
+                words: [
+                    { emoji: '👀', english: 'eye', chinese: '眼睛' },
+                    { emoji: '👃', english: 'nose', chinese: '鼻子' },
+                    { emoji: '👄', english: 'mouth', chinese: '嘴巴' },
+                    { emoji: '👂', english: 'ear', chinese: '耳朵' },
+                    { emoji: '🤚', english: 'hand', chinese: '手' },
+                    { emoji: '🦶', english: 'foot', chinese: '脚' },
+                    { emoji: '🦷', english: 'tooth', chinese: '牙齿' },
+                    { emoji: '🧠', english: 'brain', chinese: '大脑' },
+                    { emoji: '❤️', english: 'heart', chinese: '心脏' },
+                    { emoji: '💪', english: 'arm', chinese: '手臂' }
+                ]
+            },
+            life: {
+                name: '生活类',
+                icon: '🏠',
+                words: [
+                    { emoji: '🍽️', english: 'plate', chinese: '盘子' },
+                    { emoji: '🍴', english: 'fork', chinese: '叉子' },
+                    { emoji: '🥄', english: 'spoon', chinese: '勺子' },
+                    { emoji: '📱', english: 'phone', chinese: '手机' },
+                    { emoji: '📺', english: 'television', chinese: '电视' },
+                    { emoji: '💡', english: 'light', chinese: '灯' },
+                    { emoji: '🚪', english: 'door', chinese: '门' },
+                    { emoji: '🪟', english: 'window', chinese: '窗户' },
+                    { emoji: '🛏️', english: 'bed', chinese: '床' },
+                    { emoji: '🧼', english: 'soap', chinese: '肥皂' }
+                ]
+            },
+            greetings: {
+                name: '问候类',
+                icon: '👋',
+                words: [
+                    { emoji: '👋', english: 'hello', chinese: '你好' },
+                    { emoji: '🙋', english: 'hi', chinese: '嗨' },
+                    { emoji: '☀️', english: 'morning', chinese: '早上好' },
+                    { emoji: '🌙', english: 'night', chinese: '晚安' },
+                    { emoji: '🤝', english: 'thank', chinese: '谢谢' },
+                    { emoji: '🙏', english: 'please', chinese: '请' },
+                    { emoji: '👋', english: 'goodbye', chinese: '再见' },
+                    { emoji: '😊', english: 'happy', chinese: '开心' },
+                    { emoji: '😢', english: 'sad', chinese: '难过' },
+                    { emoji: '❤️', english: 'love', chinese: '爱' }
+                ]
+            },
+            transport: {
+                name: '交通类',
+                icon: '🚗',
+                words: [
+                    { emoji: '🚗', english: 'car', chinese: '汽车' },
+                    { emoji: '🚌', english: 'bus', chinese: '公交车' },
+                    { emoji: '🚄', english: 'train', chinese: '火车' },
+                    { emoji: '✈️', english: 'plane', chinese: '飞机' },
+                    { emoji: '🚲', english: 'bicycle', chinese: '自行车' },
+                    { emoji: '🚢', english: 'ship', chinese: '轮船' },
+                    { emoji: '🚕', english: 'taxi', chinese: '出租车' },
+                    { emoji: '🚁', english: 'helicopter', chinese: '直升机' },
+                    { emoji: '🚃', english: 'tram', chinese: '电车' },
+                    { emoji: '🚜', english: 'tractor', chinese: '拖拉机' }
+                ]
+            },
+            family: {
+                name: '称呼类',
+                icon: '👨‍👩‍👧',
+                words: [
+                    { emoji: '👨', english: 'father', chinese: '爸爸' },
+                    { emoji: '👩', english: 'mother', chinese: '妈妈' },
+                    { emoji: '👴', english: 'grandfather', chinese: '爷爷' },
+                    { emoji: '👵', english: 'grandmother', chinese: '奶奶' },
+                    { emoji: '👦', english: 'brother', chinese: '兄弟' },
+                    { emoji: '👧', english: 'sister', chinese: '姐妹' },
+                    { emoji: '🧔', english: 'uncle', chinese: '叔叔' },
+                    { emoji: '👩‍🦰', english: 'aunt', chinese: '阿姨' },
+                    { emoji: '👶', english: 'baby', chinese: '宝宝' },
+                    { emoji: '🧑', english: 'friend', chinese: '朋友' }
+                ]
+            },
+            food: {
+                name: '食物类',
+                icon: '🍔',
+                words: [
+                    { emoji: '🍔', english: 'hamburger', chinese: '汉堡' },
+                    { emoji: '🍕', english: 'pizza', chinese: '披萨' },
+                    { emoji: '🍜', english: 'noodles', chinese: '面条' },
+                    { emoji: '🍚', english: 'rice', chinese: '米饭' },
+                    { emoji: '🥚', english: 'egg', chinese: '鸡蛋' },
+                    { emoji: '🥛', english: 'milk', chinese: '牛奶' },
+                    { emoji: '🧀', english: 'cheese', chinese: '奶酪' },
+                    { emoji: '🍫', english: 'chocolate', chinese: '巧克力' },
+                    { emoji: '🍦', english: 'ice cream', chinese: '冰淇淋' },
+                    { emoji: '🥪', english: 'sandwich', chinese: '三明治' }
+                ]
+            },
+            nature: {
+                name: '自然类',
+                icon: '🌳',
+                words: [
+                    { emoji: '🌳', english: 'tree', chinese: '树' },
+                    { emoji: '🌸', english: 'flower', chinese: '花' },
+                    { emoji: '☀️', english: 'sun', chinese: '太阳' },
+                    { emoji: '🌙', english: 'moon', chinese: '月亮' },
+                    { emoji: '⭐', english: 'star', chinese: '星星' },
+                    { emoji: '☁️', english: 'cloud', chinese: '云' },
+                    { emoji: '🌈', english: 'rainbow', chinese: '彩虹' },
+                    { emoji: '🌊', english: 'ocean', chinese: '海洋' },
+                    { emoji: '🏔️', english: 'mountain', chinese: '山' },
+                    { emoji: '🌺', english: 'rose', chinese: '玫瑰' }
+                ]
+            }
+        };
+
+        // 游戏状态
+        let gameState = {
+            score: 0,
+            combo: 0,
+            lives: 3,
+            selectedCategory: 'fruits',
+            isPlaying: false,
+            canvas: null,
+            ctx: null,
+            cart: null,
+            fallingItems: [],
+            animationId: null,
+            lastSpawnTime: 0,
+            spawnInterval: 2000
+        };
+
+        // 学习状态
+        let learnState = {
+            category: 'fruits',
+            currentIndex: 0,
+            words: []
+        };
+
+        // 考试状态
+        let examState = {
+            category: 'fruits',
+            words: [],
+            currentIndex: 0,
+            correctCount: 0,
+            isRecording: false,
+            recognition: null,
+            timerInterval: null
+        };
+
+        // 学习进度存储
+        let progressData = {
+            learned: [],
+            learning: [],
+            highScore: 0
+        };
+
+        // 初始化
+        function init() {
+            loadProgress();
+            renderCategoryGrids();
+            initGameCanvas();
+            initSpeechRecognition();
+        }
+
+        // 页面切换
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // 渲染情景选择网格
+        function renderCategoryGrids() {
+            const grids = ['gameCategoryGrid', 'learnCategoryGrid', 'examCategoryGrid'];
+            grids.forEach(gridId => {
+                const grid = document.getElementById(gridId);
+                grid.innerHTML = '';
+                Object.keys(wordDatabase).forEach(key => {
+                    const category = wordDatabase[key];
+                    const card = document.createElement('div');
+                    card.className = 'category-card';
+                    card.dataset.category = key;
+                    card.innerHTML = `
+                        <div class="category-icon">${category.icon}</div>
+                        <div class="category-name">${category.name}</div>
+                        <div class="category-count">${category.words.length} 个单词</div>
+                    `;
+                    card.onclick = () => selectCategory(key, gridId);
+                    grid.appendChild(card);
+                });
+            });
+        }
+
+        // 选择情景
+        function selectCategory(category, gridId) {
+            gameState.selectedCategory = category;
+            
+            document.querySelectorAll('#' + gridId + ' .category-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            if (gridId === 'learnCategoryGrid') {
+                startLearnMode(category);
+            } else if (gridId === 'examCategoryGrid') {
+                startExamMode(category);
+            }
+        }
+
+        // 语音合成
+        function speak(text, lang = 'en-US') {
+            return new Promise((resolve) => {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = lang;
+                    utterance.rate = 0.8;
+                    utterance.pitch = 1.2;
+                    utterance.onend = resolve;
+                    speechSynthesis.speak(utterance);
+                } else {
+                    resolve();
