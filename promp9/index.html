@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成语故事阅读网站</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>成语故事阅读</h1>
+        <nav>
+            <button id="nav-home" class="nav-btn active">首页</button>
+            <button id="nav-favorites" class="nav-btn">我的收藏</button>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <!-- 首页 -->
+        <section id="home-page" class="page active">
+            <div class="age-selector">
+                <h2>选择适合您的年龄段</h2>
+                <div class="age-buttons">
+                    <button class="age-btn" data-level="easy">3-6岁 入门级</button>
+                    <button class="age-btn" data-level="medium">7-10岁 基础级</button>
+                    <button class="age-btn" data-level="hard">11岁以上 进阶级</button>
+                </div>
+            </div>
+            
+            <div id="story-list-container" class="story-list-container hidden">
+                <div class="list-header">
+                    <h3 id="level-title"></h3>
+                    <button id="back-home" class="back-btn">返回</button>
+                </div>
+                <div id="story-list" class="story-list"></div>
+            </div>
+        </section>
+
+        <!-- 故事详情页 -->
+        <section id="story-page" class="page">
+            <div class="story-header">
+                <button id="back-list" class="back-btn">返回列表</button>
+                <button id="favorite-btn" class="favorite-btn">收藏</button>
+            </div>
+            <h2 id="story-title"></h2>
+            <div id="story-content" class="story-content"></div>
+            <div id="story-meaning" class="story-meaning">
+                <h3>故事解读</h3>
+                <p></p>
+            </div>
+            
+            <div class="audio-controls">
+                <h4>语音播放</h4>
+                <div class="controls-row">
+                    <button id="play-btn" class="audio-btn">播放</button>
+                    <button id="pause-btn" class="audio-btn">暂停</button>
+                    <button id="stop-btn" class="audio-btn">停止</button>
+                </div>
+                <div class="progress-container">
+                    <span id="current-time">0:00</span>
+                    <input type="range" id="progress-bar" min="0" max="100" value="0">
+                    <span id="total-time">0:00</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 收藏页 -->
+        <section id="favorites-page" class="page">
+            <h2>我的收藏</h2>
+            <div id="favorites-list" class="story-list"></div>
+            <p id="no-favorites" class="no-favorites hidden">还没有收藏的故事，快去收藏吧！</p>
+        </section>
+    </main>
+
+    <script src="stories.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
