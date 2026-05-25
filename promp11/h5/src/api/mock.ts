@@ -1,0 +1,63 @@
+import { ActivityConfig, DrawResult, LotteryPrize } from '../types';
+
+export const mockActivityConfig: ActivityConfig = {
+  headerImage: 'https://img.example.com/header.jpg',
+  headerTitle: '万圣节狂欢活动',
+  ruleContent: '1. 活动时间：2024年10月25日-11月1日\n2. 参与活动即可获得抽奖机会\n3. 每日首次登录额外获得一次抽奖机会\n4. 收集活动礼物可获得积分\n5. 积分可用于兑换奖励\n6. 最终解释权归平台所有',
+  rewardLink: 'https://reward.example.com',
+  gameCombination: 'both',
+  lotteryButtonName: '万圣节抽奖',
+  rankingButtonName: '榜单',
+  giftAreaBg: 'https://img.example.com/gift-bg.jpg',
+  gifts: [
+    { id: 1, image: 'https://img.example.com/gift1.png', name: '南瓜灯', score: 100 },
+    { id: 2, image: 'https://img.example.com/gift2.png', name: '魔法帽', score: 200 },
+    { id: 3, image: 'https://img.example.com/gift3.png', name: '糖果', score: 50 },
+    { id: 4, image: 'https://img.example.com/gift4.png', name: '幽灵', score: 500 },
+    { id: 5, image: 'https://img.example.com/gift5.png', name: '蝙蝠', score: 300 },
+    { id: 6, image: 'https://img.example.com/gift6.png', name: '骷髅', score: 1000 },
+  ],
+  lotteryConfig: {
+    backgroundImage: 'https://img.example.com/lottery-bg.jpg',
+    cellDefaultBg: 'https://img.example.com/cell-default.png',
+    cellSelectedBg: 'https://img.example.com/cell-selected.png',
+    buttonText: '开始抽奖',
+    drawCounts: [1, 10, 50],
+    prizes: [
+      { id: 1, index: 0, image: 'https://img.example.com/prize1.png', name: '一等奖', quantity: 10, probability: 1 },
+      { id: 2, index: 1, image: 'https://img.example.com/prize2.png', name: '二等奖', quantity: 50, probability: 5 },
+      { id: 3, index: 2, image: 'https://img.example.com/prize3.png', name: '三等奖', quantity: 100, probability: 10 },
+      { id: 4, index: 3, image: 'https://img.example.com/prize4.png', name: '谢谢参与', quantity: 999, probability: 30 },
+      { id: 5, index: 4, image: 'https://img.example.com/prize5.png', name: '五等奖', quantity: 200, probability: 15 },
+      { id: 6, index: 5, image: 'https://img.example.com/prize6.png', name: '六等奖', quantity: 300, probability: 20 },
+      { id: 7, index: 6, image: 'https://img.example.com/prize7.png', name: '七等奖', quantity: 500, probability: 10 },
+      { id: 8, index: 7, image: 'https://img.example.com/prize8.png', name: '八等奖', quantity: 800, probability: 8 },
+      { id: 9, index: 8, image: 'https://img.example.com/prize9.png', name: '神秘大奖', quantity: 5, probability: 1 },
+    ],
+  },
+  rankingConfig: {
+    type: 'receive',
+    list: [
+      { id: 1, avatar: 'https://img.example.com/avatar1.png', nickname: '用户A', score: 10000 },
+      { id: 2, avatar: 'https://img.example.com/avatar2.png', nickname: '用户B', score: 8000 },
+      { id: 3, avatar: 'https://img.example.com/avatar3.png', nickname: '用户C', score: 6000 },
+      { id: 4, avatar: 'https://img.example.com/avatar4.png', nickname: '用户D', score: 5000 },
+      { id: 5, avatar: 'https://img.example.com/avatar5.png', nickname: '用户E', score: 4000 },
+      { id: 6, avatar: 'https://img.example.com/avatar6.png', nickname: '用户F', score: 3000 },
+      { id: 7, avatar: 'https://img.example.com/avatar7.png', nickname: '用户G', score: 2000 },
+      { id: 8, avatar: 'https://img.example.com/avatar8.png', nickname: '用户H', score: 1000 },
+    ],
+  },
+};
+
+export function calculatePrizeByProbability(prizes: LotteryPrize[]): LotteryPrize {
+  const totalProb = prizes.reduce((sum, p) => sum + p.probability, 0);
+  let random = Math.random() * totalProb;
+  for (const prize of prizes) {
+    random -= prize.probability;
+    if (random <= 0) {
+      return prize;
+    }
+  }
+  return prizes[prizes.length - 1];
+}

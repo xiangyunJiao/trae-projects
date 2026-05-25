@@ -7,7 +7,7 @@
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview --host",
-    "tunnel": "npx cloudflared tunnel --url http://localhost:5177"
+    "tunnel": "npx cloudflared tunnel --url http://localhost:5173"
   },
   "dependencies": {
     "vue": "^3.4.0"

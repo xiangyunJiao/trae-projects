@@ -296,13 +296,43 @@ function calculateQibla(lat1, lng1, lat2, lng2) {
 function handleOrientation(event) {
   let heading = 0
 
-  if (event.webkitCompassHeading) {
+  if (typeof event.webkitCompassHeading === 'number' && event.webkitCompassHeading !== 0) {
     heading = event.webkitCompassHeading
-  } else if (event.alpha !== null) {
-    heading = 360 - event.alpha
+  } else if (event.alpha !== null && !isNaN(event.alpha)) {
+    if (event.absolute) {
+      heading = (360 - event.alpha) % 360
+    } else {
+      heading = (360 - event.alpha) % 360
+    }
+  }
+
+  if (heading === 0 && event.webkitCompassHeading === 0) {
+    return
   }
 
   currentHeading.value = heading
+}
+
+async function requestOrientationPermission() {
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    const permission = await DeviceOrientationEvent.requestPermission()
+    if (permission === 'granted') {
+      orientationGranted.value = true
+      window.addEventListener('deviceorientation', handleOrientation, true)
+      return true
+    } else {
+      alert('需要方向传感器权限才能使用指南针\\n\\n请在浏览器设置中允许访问运动传感器')
+      return false
+    }
+  } else if ('DeviceOrientationEvent' in window) {
+    orientationGranted.value = true
+    window.addEventListener('deviceorientation', handleOrientation, true)
+    return true
+  } else {
+    alert('您的设备不支持方向传感器\\n\\n无法使用指南针功能')
+    return false
+  }
 }
 
 async function startCompass() {
@@ -310,31 +340,16 @@ async function startCompass() {
     const isHttps = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
     if (!isHttps) {
-      alert('定位功能需要HTTPS环境访问\\n\\n请在电脑终端执行以下命令创建HTTPS隧道：\\n\\n  npm run tunnel\\n\\n或直接执行：\\n  npx cloudflared tunnel --url http://localhost:5177\\n\\n然后使用生成的HTTPS地址在手机访问\\n\\n当前协议: ' + location.protocol)
+      alert('定位功能需要HTTPS环境访问\\n\\n请使用以下方式之一：\\n1. 运行 npm run tunnel 创建HTTPS隧道\\n2. 部署到支持HTTPS的服务器\\n\\n当前协议: ' + location.protocol)
+    }
+
+    const orientationOk = await requestOrientationPermission()
+    if (!orientationOk) {
+      return
     }
 
     if (!('geolocation' in navigator)) {
       alert('您的设备不支持地理定位')
-      return
-    }
-
-    if (typeof DeviceOrientationEvent !== 'undefined' &&
-        typeof DeviceOrientationEvent.requestPermission === 'function') {
-      const permission = DeviceOrientationEvent.requestPermission()
-      if (permission instanceof Promise) {
-        const result = await permission
-        if (result !== 'granted') {
-          alert('需要方向传感器权限才能使用指南针\\n\\n请在浏览器设置中允许访问运动传感器')
-          return
-        }
-      }
-      orientationGranted.value = true
-      window.addEventListener('deviceorientation', handleOrientation, true)
-    } else if ('DeviceOrientationEvent' in window) {
-      orientationGranted.value = true
-      window.addEventListener('deviceorientation', handleOrientation, true)
-    } else {
-      alert('您的设备不支持方向传感器\\n\\n无法使用指南针功能')
       return
     }
 
