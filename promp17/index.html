@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>滚珠迷宫</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        
+        <div id="ui-overlay">
+            <div id="top-bar" class="hidden">
+                <div class="info-box">
+                    <span class="label">关卡</span>
+                    <span id="level-display">1</span>
+                </div>
+                <div class="info-box">
+                    <span class="label">时间</span>
+                    <span id="time-display">60</span>
+                </div>
+                <button id="pause-btn" class="icon-btn">⏸</button>
+            </div>
+            
+            <div id="start-screen" class="modal-screen">
+                <h1>滚珠迷宫</h1>
+                <p class="subtitle">摇晃手机控制小球</p>
+                <button id="start-btn" class="btn-primary">开始游戏</button>
+                <button id="calibrate-btn" class="btn-secondary">校准重力</button>
+                <p class="tip">请允许访问运动传感器</p>
+            </div>
+            
+            <div id="pause-screen" class="modal-screen hidden">
+                <div class="modal">
+                    <h2>游戏暂停</h2>
+                    <button id="resume-btn" class="btn-primary">继续游戏</button>
+                    <button id="restart-btn" class="btn-secondary">重新开始</button>
+                    <button id="quit-btn" class="btn-secondary">返回主菜单</button>
+                </div>
+            </div>
+            
+            <div id="ad-screen" class="modal-screen hidden">
+                <div class="modal">
+                    <h2>时间到！</h2>
+                    <p>观看广告可延长15秒</p>
+                    <button id="watch-ad-btn" class="btn-primary">观看广告</button>
+                    <button id="give-up-btn" class="btn-secondary">放弃挑战</button>
+                </div>
+            </div>
+            
+            <div id="ad-playing-screen" class="modal-screen hidden">
+                <div class="modal">
+                    <h2>广告播放中...</h2>
+                    <div id="ad-progress">
+                        <div id="ad-progress-bar"></div>
+                    </div>
+                    <p id="ad-countdown">10</p>
+                </div>
+            </div>
+            
+            <div id="win-screen" class="modal-screen hidden">
+                <div class="modal">
+                    <h2>🎉 恭喜过关！</h2>
+                    <p id="win-info">用时: 0秒</p>
+                    <button id="next-level-btn" class="btn-primary">下一关</button>
+                </div>
+            </div>
+            
+            <div id="lose-screen" class="modal-screen hidden">
+                <div class="modal">
+                    <h2>💔 挑战失败</h2>
+                    <p>再接再厉！</p>
+                    <button id="retry-btn" class="btn-primary">再玩一次</button>
+                    <button id="close-btn" class="btn-secondary">关闭游戏</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/maze.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

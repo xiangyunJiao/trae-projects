@@ -1,0 +1,19 @@
+{
+    "name": "ball-maze-game",
+    "version": "1.0.0",
+    "description": "滚珠迷宫H5游戏 - 摇晃手机控制小球走迷宫",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "node server.js"
+    },
+    "keywords": [
+        "game",
+        "maze",
+        "h5",
+        "mobile",
+        "accelerometer"
+    ],
+    "author": "",
+    "license": "ISC"
+}
