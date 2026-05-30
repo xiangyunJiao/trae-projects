@@ -1,0 +1,84 @@
+.kick-button {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.kick-button.disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 40px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+  border-radius: 50px;
+  box-shadow: 
+    0 6px 0 #991b1b,
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  transform: translateY(0);
+  transition: all 0.15s ease;
+}
+
+.kick-button:not(.disabled):active .button-content {
+  transform: translateY(4px);
+  box-shadow: 
+    0 2px 0 #991b1b,
+    0 4px 10px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.kick-button:not(.disabled):hover .button-content {
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 50%, #dc2626 100%);
+}
+
+.football-icon {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.button-text {
+  font-size: 24px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 -1px 0 rgba(0, 0, 0, 0.2);
+  letter-spacing: 4px;
+}
+
+.kick-button.disabled .button-content {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 50%, #4b5563 100%);
+  box-shadow: 
+    0 4px 0 #374151,
+    0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+@media (min-width: 768px) {
+  .button-content {
+    padding: 20px 60px;
+    gap: 16px;
+  }
+  
+  .football-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .button-text {
+    font-size: 28px;
+  }
+}

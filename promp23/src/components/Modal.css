@@ -1,0 +1,314 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+  padding: 20px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  position: relative;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 24px;
+  padding: 32px 24px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  animation: modalPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+@keyframes modalPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.win-modal {
+  border: 3px solid #FFD700;
+  box-shadow: 
+    0 0 40px rgba(255, 215, 0, 0.3),
+    0 0 80px rgba(255, 215, 0, 0.1),
+    inset 0 0 20px rgba(255, 215, 0, 0.1);
+}
+
+.lose-modal {
+  border: 2px solid #4a5568;
+  box-shadow: 
+    0 0 30px rgba(74, 85, 104, 0.3),
+    inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  animation: confettiFall 2s ease-out forwards;
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(400px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.trophy-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
+  animation: trophyBounce 0.6s ease-out 0.3s both;
+}
+
+@keyframes trophyBounce {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.win-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #FFD700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  margin-bottom: 8px;
+}
+
+.win-subtitle {
+  font-size: 14px;
+  color: #a0aec0;
+  margin-bottom: 24px;
+}
+
+.prize-card {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.prize-image-container {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.prize-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.prize-info {
+  flex: 1;
+  text-align: left;
+}
+
+.prize-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.prize-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.coin-icon {
+  font-size: 18px;
+}
+
+.value-text {
+  font-size: 18px;
+  font-weight: 800;
+  color: #FFD700;
+}
+
+.football-decoration {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  opacity: 0.3;
+  animation: footballFloat 3s ease-in-out infinite;
+}
+
+.football-decoration.left {
+  top: 20px;
+  left: 20px;
+  animation-delay: 0s;
+}
+
+.football-decoration.right {
+  bottom: 100px;
+  right: 20px;
+  animation-delay: 1.5s;
+}
+
+@keyframes footballFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(10deg);
+  }
+}
+
+.sad-football {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
+  animation: sadShake 0.5s ease-out;
+}
+
+@keyframes sadShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+.lose-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 8px;
+}
+
+.lose-subtitle {
+  font-size: 14px;
+  color: #718096;
+  margin-bottom: 20px;
+}
+
+.encouragement-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.encouragement-icon {
+  font-size: 32px;
+}
+
+.encouragement-text {
+  font-size: 14px;
+  color: #a0aec0;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.modal-button {
+  width: 100%;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 2px;
+}
+
+.win-button {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #1a1a2e;
+  box-shadow: 
+    0 4px 0 #B8860B,
+    0 8px 20px rgba(255, 215, 0, 0.3);
+}
+
+.win-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 0 #B8860B,
+    0 12px 24px rgba(255, 215, 0, 0.4);
+}
+
+.win-button:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 #B8860B,
+    0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.lose-button {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 
+    0 4px 0 #1d4ed8,
+    0 8px 20px rgba(59, 130, 246, 0.3);
+}
+
+.lose-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 0 #1d4ed8,
+    0 12px 24px rgba(59, 130, 246, 0.4);
+}
+
+.lose-button:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 #1d4ed8,
+    0 4px 12px rgba(59, 130, 246, 0.3);
+}

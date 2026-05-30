@@ -1,0 +1,204 @@
+.goalkeeper-container {
+  transition: transform 0.2s ease;
+  transform-origin: bottom center;
+  z-index: 40;
+}
+
+.goalkeeper-container.save-left {
+  animation: saveLeft 0.7s ease-out forwards;
+}
+
+.goalkeeper-container.save-right {
+  animation: saveRight 0.7s ease-out forwards;
+}
+
+.goalkeeper-container.save-center {
+  animation: saveCenter 0.5s ease-out forwards;
+}
+
+@keyframes saveLeft {
+  0% {
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+  }
+  20% {
+    transform: translateX(-50%) translateY(-8px) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-130%) translateY(-25px) rotate(-25deg);
+  }
+  100% {
+    transform: translateX(-130%) translateY(-15px) rotate(-20deg);
+  }
+}
+
+@keyframes saveRight {
+  0% {
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+  }
+  20% {
+    transform: translateX(-50%) translateY(-8px) rotate(0deg);
+  }
+  50% {
+    transform: translateX(30%) translateY(-25px) rotate(25deg);
+  }
+  100% {
+    transform: translateX(30%) translateY(-15px) rotate(20deg);
+  }
+}
+
+@keyframes saveCenter {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  25% {
+    transform: translateX(-50%) translateY(-12px) scale(1.05);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-5px) scale(0.95);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.goalkeeper-svg {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.save-left .gk-left-arm {
+  animation: leftArmDive 0.7s ease-out forwards;
+  transform-origin: 32px 55px;
+}
+
+.save-left .gk-right-arm {
+  animation: rightArmDiveLeft 0.7s ease-out forwards;
+  transform-origin: 68px 55px;
+}
+
+.save-right .gk-left-arm {
+  animation: leftArmDiveRight 0.7s ease-out forwards;
+  transform-origin: 32px 55px;
+}
+
+.save-right .gk-right-arm {
+  animation: rightArmDive 0.7s ease-out forwards;
+  transform-origin: 68px 55px;
+}
+
+@keyframes leftArmDive {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-50deg) translateX(-10px);
+  }
+}
+
+@keyframes rightArmDiveLeft {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-30deg) translateX(-5px);
+  }
+}
+
+@keyframes rightArmDive {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(50deg) translateX(10px);
+  }
+}
+
+@keyframes leftArmDiveRight {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(30deg) translateX(5px);
+  }
+}
+
+.save-center .gk-left-arm {
+  animation: centerArmSave 0.5s ease-out forwards;
+  transform-origin: 32px 55px;
+}
+
+.save-center .gk-right-arm {
+  animation: centerArmSave 0.5s ease-out forwards;
+  transform-origin: 68px 55px;
+}
+
+@keyframes centerArmSave {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(15deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.gk-body {
+  transition: transform 0.1s ease;
+}
+
+.save-left .gk-body {
+  animation: bodyLeanLeft 0.7s ease-out forwards;
+}
+
+.save-right .gk-body {
+  animation: bodyLeanRight 0.7s ease-out forwards;
+}
+
+@keyframes bodyLeanLeft {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+}
+
+@keyframes bodyLeanRight {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+}
+
+.gk-head {
+  transition: transform 0.2s ease;
+}
+
+.save-left .gk-head {
+  animation: headFollowLeft 0.7s ease-out forwards;
+}
+
+.save-right .gk-head {
+  animation: headFollowRight 0.7s ease-out forwards;
+}
+
+@keyframes headFollowLeft {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-15deg) translateY(-2px);
+  }
+}
+
+@keyframes headFollowRight {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(15deg) translateY(-2px);
+  }
+}
