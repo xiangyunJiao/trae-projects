@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FFE4E9 0%, #E0F4FF 50%, #E8FFE8 100%);
+  background-attachment: fixed;
+}
+
+.cute-shadow {
+  box-shadow: 0 4px 15px rgba(255, 182, 193, 0.3), 0 2px 5px rgba(135, 206, 235, 0.2);
+}
+
+.cute-border {
+  border: 3px solid #FFB6C1;
+  border-radius: 20px;
+}
+
+.btn-cute {
+  @apply px-6 py-3 rounded-full font-bold transition-all duration-300 transform hover:scale-105 active:scale-95;
+  box-shadow: 0 4px 0 #FF69B4, 0 6px 10px rgba(255, 105, 180, 0.3);
+}
+
+.btn-cute:active {
+  box-shadow: 0 2px 0 #FF69B4, 0 3px 5px rgba(255, 105, 180, 0.3);
+  transform: translateY(2px) scale(0.95);
+}
+
+.btn-pink {
+  @apply bg-pink-cute text-white;
+}
+
+.btn-blue {
+  @apply bg-blue-cute text-white;
+  box-shadow: 0 4px 0 #4682B4, 0 6px 10px rgba(70, 130, 180, 0.3);
+}
+
+.btn-blue:active {
+  box-shadow: 0 2px 0 #4682B4, 0 3px 5px rgba(70, 130, 180, 0.3);
+}
+
+.btn-green {
+  @apply bg-green-cute text-gray-700;
+  box-shadow: 0 4px 0 #90EE90, 0 6px 10px rgba(144, 238, 144, 0.3);
+}
+
+.btn-green:active {
+  box-shadow: 0 2px 0 #90EE90, 0 3px 5px rgba(144, 238, 144, 0.3);
+}
+
+.input-cute {
+  @apply w-full px-4 py-3 rounded-2xl border-2 border-pink-cute bg-white/80 focus:outline-none focus:ring-4 focus:ring-pink-cute/30 transition-all;
+}
+
+.card-cute {
+  @apply bg-white/90 rounded-3xl p-4 cute-shadow cute-border;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+.sparkle {
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+.decoration-bg {
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 182, 193, 0.3) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(135, 206, 235, 0.3) 0%, transparent 20%),
+    radial-gradient(circle at 50% 50%, rgba(152, 251, 152, 0.2) 0%, transparent 30%);
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.audio-btn {
+  @apply absolute bottom-2 right-2 w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg transition-all hover:scale-110;
+  border: 3px solid #FFB6C1;
+}
+
+.recording {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
